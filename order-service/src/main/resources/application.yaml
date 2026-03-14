@@ -3,3 +3,18 @@ server:
 spring:
   application:
     name: order-service
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          stream:
+            messaging: trace
+  file:
+    name: logs/order-service.log
+  logback:
+    rollingpolicy:
+      file-name-pattern: logs/%d{yyyy-MM, aux}/order-service.%d{yyyy-MM-dd}.%i.log
+      max-file-size: 10MB
+      total-size-cap: 100MB
+      max-history: 10

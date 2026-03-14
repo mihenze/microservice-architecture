@@ -1,4 +1,4 @@
-package com.mihenze.mscurse.order_service;
+package com.mihenze.mscurse.orderservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
