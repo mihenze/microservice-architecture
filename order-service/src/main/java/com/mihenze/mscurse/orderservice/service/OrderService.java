@@ -1,0 +1,90 @@
+package com.mihenze.mscurse.orderservice.service;
+
+import com.mihenze.mscurse.orderservice.entity.Order;
+import com.mihenze.mscurse.orderservice.entity.OrderItem;
+import com.mihenze.mscurse.orderservice.entity.OrderStatus;
+import com.mihenze.mscurse.orderservice.exception.InvalidUpdateOrderException;
+import com.mihenze.mscurse.orderservice.exception.NotFoundOrderException;
+import com.mihenze.mscurse.orderservice.mapper.OrderMapper;
+import com.mihenze.mscurse.orderservice.repository.OrderRepository;
+import com.mihenze.mscurse.orderservice.rest.order.CreateOrderRequest;
+import com.mihenze.mscurse.orderservice.rest.order.OrderResponse;
+import com.mihenze.mscurse.orderservice.rest.order.UpdateOrderRequest;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+@Slf4j
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
+public class OrderService {
+    private final OrderRepository orderRepository;
+    private final OrderMapper orderMapper;
+    private final UidGenerateService uidGenerateService;
+
+    @Transactional
+    public OrderResponse createOrder(CreateOrderRequest request) {
+        Order order = orderMapper.mapToOrder(request);
+
+        order.setStatus(OrderStatus.CREATED);
+        order.setUid(uidGenerateService.generateUid());
+
+        if (order.getItems() != null) {
+            order.getItems().forEach(item -> item.setOrder(order));
+        }
+
+        Order orderSaved = orderRepository.save(order);
+        return orderMapper.mapToOrderResponse(orderSaved);
+    }
+
+    @Transactional
+    public OrderResponse updateOrder(UpdateOrderRequest request) {
+
+        if (request.getStatus() == OrderStatus.CREATED) {
+            Order order = orderRepository.findByIdFetch(request.getId())
+                    .orElseThrow(() -> new NotFoundOrderException(request.getId()));
+
+            Order orderUpd = orderMapper.mapToOrder(request);
+            order.setCost(orderUpd.getCost());
+            order.setAddress(orderUpd.getAddress());
+            order.getItems().clear();
+
+            if (orderUpd.getItems() != null) {
+                for (OrderItem item : orderUpd.getItems()) {
+                    item.setOrder(order);
+                    order.getItems().add(item);
+                }
+            }
+
+            Order saved = orderRepository.save(order);
+            return orderMapper.mapToOrderResponse(saved);
+        } else {
+            throw new InvalidUpdateOrderException(request.getStatus());
+        }
+    }
+
+    public OrderResponse getOrderById(Long id) {
+        Order order = orderRepository.findByIdFetch(id)
+                .orElseThrow(() -> new NotFoundOrderException(id));
+
+        return orderMapper.mapToOrderResponse(order);
+    }
+
+    public List<OrderResponse> getAllOrder() {
+        List<Order> orders = orderRepository.findAllFetch();
+        return orders.stream().map(orderMapper::mapToOrderResponse).toList();
+    }
+
+    @Transactional
+    public void deleteOrder(Long id) {
+        if (!orderRepository.existsById(id)) {
+            throw new NotFoundOrderException(id);
+        }
+
+        orderRepository.deleteById(id);
+    }
+}

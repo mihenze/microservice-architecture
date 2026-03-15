@@ -1,0 +1,45 @@
+package com.mihenze.mscurse.orderservice.service;
+
+import com.mihenze.mscurse.orderservice.repository.OrderRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.Random;
+
+@Service
+@RequiredArgsConstructor
+public class UidGenerateService {
+    private final Random random = new Random();
+    private final OrderRepository orderRepository;
+
+    private char randomLetter() {
+        return (char) ('A' + random.nextInt(26));
+    }
+
+    private char randomNumber() {
+        return (char) ('0' + random.nextInt(9));
+    }
+
+    /**
+     * Генерация последовательности вида LLL-dddd
+     */
+    private String generateKey() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 3; i++) {
+            sb.append(randomLetter());
+        }
+        sb.append('-');
+        for (int i = 0; i < 5; i++) {
+            sb.append(randomNumber());
+        }
+        return sb.toString();
+    }
+
+    public String generateUid() {
+        String uid = generateKey();
+        while (orderRepository.existsByUid(uid)) {
+            uid = generateKey();
+        }
+        return uid;
+    }
+}
