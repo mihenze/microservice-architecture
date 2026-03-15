@@ -1,0 +1,443 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8002
+  description: Generated server url
+tags:
+- name: Payment Service API
+  description: Сервис Оплаты
+paths:
+  /payments:
+    put:
+      tags:
+      - Payment Service API
+      summary: Обновить оплату
+      operationId: updatePayment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePaymentRequest"
+        required: true
+      responses:
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentErrorResponse"
+        "200":
+          description: Новый заказ успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+        "400":
+          description: Переданы некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentErrorResponse"
+    post:
+      tags:
+      - Payment Service API
+      summary: Создать оплату
+      operationId: createPayment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePaymentRequest"
+        required: true
+      responses:
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentErrorResponse"
+        "200":
+          description: Новый заказ успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+        "400":
+          description: Переданы некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentErrorResponse"
+  /payments/{payment_id}/transactions:
+    post:
+      tags:
+      - Payment Service API
+      summary: Создать транзакцию
+      operationId: createTransactional
+      parameters:
+      - name: payment_id
+        in: path
+        description: Идентификатор оплаты
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTransactionalRequest"
+        required: true
+      responses:
+        "200":
+          description: Новый заказ успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionalResponse"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentErrorResponse"
+        "400":
+          description: Переданы некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentErrorResponse"
+    patch:
+      tags:
+      - Payment Service API
+      summary: Обновить статус транзакции
+      operationId: updateTransactional
+      parameters:
+      - name: payment_id
+        in: path
+        description: Идентификатор оплаты
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTransactionalRequest"
+        required: true
+      responses:
+        "200":
+          description: Новый заказ успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionalResponse"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentErrorResponse"
+        "400":
+          description: Переданы некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentErrorResponse"
+  /payments/{payment_id}:
+    get:
+      tags:
+      - Payment Service API
+      summary: Получить оплату по id с транзакциями
+      operationId: getPayment
+      parameters:
+      - name: payment_id
+        in: path
+        description: Идентификатор оплаты
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentErrorResponse"
+        "404":
+          description: Оплата не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentErrorResponse"
+        "200":
+          description: Информация об оплате получена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+    delete:
+      tags:
+      - Payment Service API
+      summary: Удалить оплату
+      operationId: deletePayment
+      parameters:
+      - name: payment_id
+        in: path
+        description: Идентификатор оплаты
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentErrorResponse"
+        "404":
+          description: Оплата не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentErrorResponse"
+        "200":
+          description: Оплата успешно удалена
+  /payments/transactions/{transaction_id}:
+    delete:
+      tags:
+      - Payment Service API
+      summary: Удалить транзакцию
+      operationId: deleteTransactional
+      parameters:
+      - name: transaction_id
+        in: path
+        description: Идентификатор транзакции
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentErrorResponse"
+        "200":
+          description: Транзакция успешно удалена
+        "404":
+          description: Транзакция не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentErrorResponse"
+components:
+  schemas:
+    CurrencyEnum:
+      type: string
+      description: Валюта
+      example: USD
+      enum:
+      - USD
+      - EUR
+      - RUB
+    PaymentStatusEnum:
+      type: string
+      description: Статус оплаты
+      example: PENDING
+      enum:
+      - PENDING
+      - AUTHORIZED
+      - CAPTURED
+      - FAILED
+      - CANCELLED
+      - REFUNDED
+    PaymentTypeEnum:
+      type: string
+      description: Тип оплаты
+      example: CARD
+      enum:
+      - CARD
+      - CASH
+    UpdatePaymentRequest:
+      required:
+      - amount
+      - currency
+      - id
+      - status
+      - type
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Уникальный идентификатор оплаты
+          format: int64
+        status:
+          $ref: "#/components/schemas/PaymentStatusEnum"
+        type:
+          $ref: "#/components/schemas/PaymentTypeEnum"
+        amount:
+          type: number
+          description: Цена
+        currency:
+          $ref: "#/components/schemas/CurrencyEnum"
+      description: Запрос на изменение оплаты
+    PaymentErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Описание ошибки
+          example: Заказ не найден
+        description:
+          type: string
+          description: Пояснения о причинах ошибки
+    PaymentResponse:
+      required:
+      - amount
+      - createdAt
+      - currency
+      - id
+      - orderId
+      - status
+      - transactions
+      - type
+      - updatedAt
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Уникальный идентификатор оплаты
+          format: int64
+        status:
+          $ref: "#/components/schemas/PaymentStatusEnum"
+        type:
+          $ref: "#/components/schemas/PaymentTypeEnum"
+        amount:
+          type: number
+          description: Цена
+        currency:
+          $ref: "#/components/schemas/CurrencyEnum"
+        createdAt:
+          type: string
+          description: Время создания
+          format: date-time
+          example: 2025-09-25T01:11:36Z
+        updatedAt:
+          type: string
+          description: Время изменения
+          format: date-time
+          example: 2025-09-25T01:11:36Z
+        orderId:
+          type: integer
+          description: Уникальный идентификатор заказа
+          format: int64
+        transactions:
+          type: array
+          description: Список транзакций оплаты
+          items:
+            $ref: "#/components/schemas/TransactionalResponse"
+      description: Текущая оплата
+    TransactionStatusEnum:
+      type: string
+      description: Статус транзакции
+      example: PENDING
+      enum:
+      - PENDING
+      - SUCCESS
+      - FAILED
+    TransactionalResponse:
+      required:
+      - amount
+      - createdAt
+      - currency
+      - id
+      - status
+      - type
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Уникальный идентификатор транзакции
+          format: int64
+        status:
+          $ref: "#/components/schemas/TransactionStatusEnum"
+        type:
+          $ref: "#/components/schemas/TransactionalTypeEnum"
+        amount:
+          type: number
+          description: Цена
+        currency:
+          $ref: "#/components/schemas/CurrencyEnum"
+        createdAt:
+          type: string
+          description: Время создания
+          format: date-time
+          example: 2025-09-25T01:11:36Z
+      description: Текущая транзакция
+    TransactionalTypeEnum:
+      type: string
+      description: Тип транзакции
+      example: AUTHORIZATION
+      enum:
+      - AUTHORIZATION
+      - CAPTURE
+      - REFUND
+      - CANCEL
+    CreatePaymentRequest:
+      required:
+      - amount
+      - currency
+      - orderId
+      - type
+      type: object
+      properties:
+        type:
+          $ref: "#/components/schemas/PaymentTypeEnum"
+        amount:
+          type: number
+          description: Цена
+        currency:
+          $ref: "#/components/schemas/CurrencyEnum"
+        orderId:
+          type: integer
+          description: Уникальный идентификатор заказа
+          format: int64
+      description: Запрос на создание новой оплаты
+    CreateTransactionalRequest:
+      required:
+      - amount
+      - currency
+      - type
+      type: object
+      properties:
+        type:
+          $ref: "#/components/schemas/TransactionalTypeEnum"
+        amount:
+          type: number
+          description: Цена
+        currency:
+          $ref: "#/components/schemas/CurrencyEnum"
+      description: Запрос на создание новой транзакции
+    UpdateTransactionalRequest:
+      required:
+      - id
+      - status
+      - type
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Уникальный идентификатор транзакции
+          format: int64
+        status:
+          $ref: "#/components/schemas/TransactionStatusEnum"
+        type:
+          $ref: "#/components/schemas/TransactionalTypeEnum"
+      description: Запрос на изменение статуса транзакции
