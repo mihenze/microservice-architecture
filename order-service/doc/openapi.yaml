@@ -9,7 +9,7 @@ tags:
 - name: Order Service API
   description: Сервис Заказов
 paths:
-  /orders:
+  /api/v1/orders:
     get:
       tags:
       - Order Service API
@@ -48,18 +48,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/OrderErrorResponse"
-        "400":
-          description: Переданы некорректные данные
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OrderErrorResponse"
         "200":
           description: Заказ успешно обновлен
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/OrderResponse"
+        "400":
+          description: Переданы некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderErrorResponse"
         "404":
           description: Заказ не найден
           content:
@@ -78,25 +78,25 @@ paths:
               $ref: "#/components/schemas/CreateOrderRequest"
         required: true
       responses:
-        "500":
-          description: Ошибка сервера
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OrderErrorResponse"
         "200":
           description: Новый заказ успешно создан
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/OrderResponse"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderErrorResponse"
         "400":
           description: Переданы некорректные данные
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/OrderErrorResponse"
-  /orders/{order_id}:
+  /api/v1/orders/{order_id}:
     get:
       tags:
       - Order Service API
@@ -111,18 +111,18 @@ paths:
           type: integer
           format: int64
       responses:
-        "500":
-          description: Ошибка сервера
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OrderErrorResponse"
         "200":
           description: Информация о заказе получена
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/OrderResponse"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderErrorResponse"
         "404":
           description: Заказ не найден
           content:

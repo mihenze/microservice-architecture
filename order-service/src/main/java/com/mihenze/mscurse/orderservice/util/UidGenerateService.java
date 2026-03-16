@@ -1,4 +1,4 @@
-package com.mihenze.mscurse.orderservice.service;
+package com.mihenze.mscurse.orderservice.util;
 
 import com.mihenze.mscurse.orderservice.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;

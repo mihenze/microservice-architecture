@@ -16,7 +16,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query(value = "from Order ord left join fetch ord.items order by ord.id")
     List<Order> findAllFetch();
 
-    boolean existsById(Long id);
-
     boolean existsByUid(String uid);
 }

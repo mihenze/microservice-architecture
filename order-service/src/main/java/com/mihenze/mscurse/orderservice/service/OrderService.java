@@ -10,6 +10,7 @@ import com.mihenze.mscurse.orderservice.repository.OrderRepository;
 import com.mihenze.mscurse.orderservice.rest.order.CreateOrderRequest;
 import com.mihenze.mscurse.orderservice.rest.order.OrderResponse;
 import com.mihenze.mscurse.orderservice.rest.order.UpdateOrderRequest;
+import com.mihenze.mscurse.orderservice.util.UidGenerateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
