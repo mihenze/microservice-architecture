@@ -1,0 +1,418 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8003
+  description: Generated server url
+tags:
+- name: Shipment Service API
+  description: Сервис Доставки
+paths:
+  /api/v1/shipments:
+    put:
+      tags:
+      - Shipment Service API
+      summary: Обновить отправление
+      operationId: updateShipment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateShipmentRequest"
+        required: true
+      responses:
+        "400":
+          description: Переданы некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShipmentErrorResponse"
+        "200":
+          description: Отправление успешно обновлено
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShipmentResponse"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShipmentErrorResponse"
+    post:
+      tags:
+      - Shipment Service API
+      summary: Создать отправление
+      operationId: createShipment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateShipmentRequest"
+        required: true
+      responses:
+        "200":
+          description: Новое отправление успешно создано
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShipmentResponse"
+        "400":
+          description: Переданы некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShipmentErrorResponse"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShipmentErrorResponse"
+  /api/v1/shipments/{shipment_id}:
+    get:
+      tags:
+      - Shipment Service API
+      summary: Получить полную информацию об отправлении по id
+      operationId: getShipment
+      parameters:
+      - name: shipment_id
+        in: path
+        description: Идентификатор отправления
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Информация об отправлении получена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShipmentResponse"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShipmentErrorResponse"
+        "404":
+          description: Оплата не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShipmentErrorResponse"
+    delete:
+      tags:
+      - Shipment Service API
+      summary: Удалить отправление
+      operationId: deleteShipment
+      parameters:
+      - name: shipment_id
+        in: path
+        description: Идентификатор отправления
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Отправление успешно удалено
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShipmentErrorResponse"
+        "404":
+          description: Отправление не найдено
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShipmentErrorResponse"
+components:
+  schemas:
+    DeliveryMethodEnum:
+      type: string
+      description: Метод доставки
+      example: COURIER
+      enum:
+      - COURIER
+      - POST
+      - PICKUP_POINT
+      - LOCKER
+    UpdateShipmentRequest:
+      required:
+      - addressApartment
+      - addressBuilding
+      - addressCity
+      - addressPostcode
+      - addressRegion
+      - addressStreet
+      - deliveryMethod
+      - id
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Уникальный идентификатор отправления
+          format: int64
+        addressRegion:
+          type: string
+          description: Наименование территориального региона доставки
+        addressCity:
+          type: string
+          description: Наименование города
+        addressStreet:
+          type: string
+          description: Наименование улицы
+        addressPostcode:
+          type: integer
+          description: Почтовый индекс
+          format: int32
+        addressBuilding:
+          type: integer
+          description: Номер дома
+          format: int32
+        addressApartment:
+          type: integer
+          description: Номер квартиры
+          format: int32
+          nullable: true
+        deliveryMethod:
+          $ref: "#/components/schemas/DeliveryMethodEnum"
+      description: Обновить текущее отправление
+    ShipmentErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Описание ошибки
+          example: Заказ не найден
+        description:
+          type: string
+          description: Пояснения о причинах ошибки
+    PackageResponse:
+      required:
+      - dimensionUnit
+      - height
+      - id
+      - length
+      - status
+      - weightUnit
+      - weightValue
+      - width
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Уникальный идентификатор посылки
+          format: int64
+        length:
+          type: number
+          description: Длина посылки
+          format: double
+        width:
+          type: number
+          description: Ширина посылки
+          format: double
+        height:
+          type: number
+          description: Высота посылки
+          format: double
+        dimensionUnit:
+          type: string
+          description: Единицы измерения габаритов
+        weightValue:
+          type: number
+          description: Вес посылки
+          format: double
+        weightUnit:
+          type: string
+          description: Единицы измерения веса
+        status:
+          $ref: "#/components/schemas/PackageStatusEnum"
+      description: Текущая посылка
+    PackageStatusEnum:
+      type: string
+      description: Состояние упаковки
+      example: CREATED
+      enum:
+      - CREATED
+      - PACKED
+      - SHIPPED
+      - DELIVERED
+    ShipmentResponse:
+      required:
+      - addressApartment
+      - addressBuilding
+      - addressCity
+      - addressPostcode
+      - addressRegion
+      - addressStreet
+      - createdAt
+      - deliveryMethod
+      - events
+      - id
+      - orderId
+      - packages
+      - status
+      - trackingNumber
+      - updatedAt
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Уникальный идентификатор отправления
+          format: int64
+        orderId:
+          type: integer
+          description: Уникальный идентификатор заказа
+          format: int64
+        addressRegion:
+          type: string
+          description: Наименование территориального региона доставки
+        addressCity:
+          type: string
+          description: Наименование города
+        addressStreet:
+          type: string
+          description: Наименование улицы
+        addressPostcode:
+          type: integer
+          description: Почтовый индекс
+          format: int32
+        addressBuilding:
+          type: integer
+          description: Номер дома
+          format: int32
+        addressApartment:
+          type: integer
+          description: Номер квартиры
+          format: int32
+          nullable: true
+        deliveryMethod:
+          $ref: "#/components/schemas/DeliveryMethodEnum"
+        status:
+          $ref: "#/components/schemas/ShipmentStatusEnum"
+        trackingNumber:
+          type: string
+          description: Номер отслеживания
+        createdAt:
+          type: string
+          description: Время изменения
+          format: date-time
+          example: 2025-09-25T01:11:36Z
+        updatedAt:
+          type: string
+          description: Время изменения
+          format: date-time
+          example: 2025-09-25T01:11:36Z
+        packages:
+          type: array
+          description: Список посылок
+          items:
+            $ref: "#/components/schemas/PackageResponse"
+        events:
+          type: array
+          description: Список отслеживаний
+          items:
+            $ref: "#/components/schemas/TrackingEventResponse"
+      description: Текущее отправление
+    ShipmentStatusEnum:
+      type: string
+      description: Состояние отправления
+      example: CREATED
+      enum:
+      - CREATED
+      - PROCESSING
+      - SHIPPED
+      - IN_TRANSIT
+      - OUT_FOR_DELIVERY
+      - DELIVERED
+      - CANCELLED
+      - RETURNED
+    TrackingEventResponse:
+      required:
+      - city
+      - description
+      - eventTime
+      - id
+      - status
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Уникальный идентификатор отслеживания
+          format: int64
+        description:
+          type: string
+          description: Описание отслеживания
+        status:
+          $ref: "#/components/schemas/TrackingStatusEnum"
+        city:
+          type: string
+          description: Текущий город
+        eventTime:
+          type: string
+          description: Время изменения
+          format: date-time
+          example: 2025-09-25T01:11:36Z
+      description: Текущее отслеживание
+    TrackingStatusEnum:
+      type: string
+      description: Состояние отслеживания
+      example: PACKAGE_PREPARED
+      enum:
+      - PACKAGE_PREPARED
+      - PICKED_UP
+      - DEPARTED_FROM_WAREHOUSE
+      - ARRIVED_AT_HUB
+      - SORTED
+      - DEPARTED_FROM_HUB
+      - ARRIVED_AT_DESTINATION_CITY
+      - COURIER_ASSIGNED
+      - OUT_FOR_DELIVERY
+      - DELIVERED
+    CreateShipmentRequest:
+      required:
+      - addressApartment
+      - addressBuilding
+      - addressCity
+      - addressPostcode
+      - addressRegion
+      - addressStreet
+      - deliveryMethod
+      - orderId
+      type: object
+      properties:
+        orderId:
+          type: integer
+          description: Уникальный идентификатор заказа
+          format: int64
+        addressRegion:
+          type: string
+          description: Наименование территориального региона доставки
+        addressCity:
+          type: string
+          description: Наименование города
+        addressStreet:
+          type: string
+          description: Наименование улицы
+        addressPostcode:
+          type: integer
+          description: Почтовый индекс
+          format: int32
+        addressBuilding:
+          type: integer
+          description: Номер дома
+          format: int32
+        addressApartment:
+          type: integer
+          description: Номер квартиры
+          format: int32
+          nullable: true
+        deliveryMethod:
+          $ref: "#/components/schemas/DeliveryMethodEnum"
+      description: Создать новое отправление
