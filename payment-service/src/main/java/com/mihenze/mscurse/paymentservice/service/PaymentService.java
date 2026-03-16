@@ -17,10 +17,12 @@ import com.mihenze.mscurse.paymentservice.rest.transaction.UpdateTransactionalRe
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final TransactionalRepository transactionalRepository;
@@ -34,6 +36,7 @@ public class PaymentService {
         return paymentMapper.mapToPaymentResponse(payment);
     }
 
+    @Transactional
     public PaymentResponse createPayment(CreatePaymentRequest request) {
         Payment payment = paymentMapper.mapToPayment(request);
 
@@ -43,6 +46,7 @@ public class PaymentService {
         return paymentMapper.mapToPaymentResponse(payment);
     }
 
+    @Transactional
     public PaymentResponse updatePayment(UpdatePaymentRequest request) {
         Payment payment = paymentRepository.findByIdFetch(request.getId())
                 .orElseThrow(() -> new NotFoundPaymentException(request.getId()));
@@ -60,6 +64,7 @@ public class PaymentService {
         }
     }
 
+    @Transactional
     public void deletePayment(Long id) {
         if (!paymentRepository.existsById(id)) {
             throw new NotFoundPaymentException(id);
@@ -68,6 +73,7 @@ public class PaymentService {
         paymentRepository.deleteById(id);
     }
 
+    @Transactional
     public TransactionalResponse createTransaction(Long id, CreateTransactionalRequest request) {
         Payment payment = paymentRepository.findByIdFetch(id)
                 .orElseThrow(() -> new NotFoundPaymentException(id));
@@ -80,6 +86,7 @@ public class PaymentService {
         return transactionalMapper.mapToTransactionalResponse(transaction);
     }
 
+    @Transactional
     public TransactionalResponse updateTransaction(Long id, UpdateTransactionalRequest request) {
         Transaction transaction = transactionalRepository.findById(request.getId())
                 .orElseThrow(() -> new NotFoundTransactionException(id));
@@ -92,6 +99,7 @@ public class PaymentService {
         return transactionalMapper.mapToTransactionalResponse(saved);
     }
 
+    @Transactional
     public void deleteTransaction(Long id) {
         if (!transactionalRepository.existsById(id)) {
             throw new NotFoundTransactionException(id);
