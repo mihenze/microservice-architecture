@@ -1,9 +1,9 @@
 package com.mihenze.mscurse.deliveryservice.controller.doc;
 
 import com.mihenze.mscurse.deliveryservice.rest.DeliveryErrorResponse;
-import com.mihenze.mscurse.deliveryservice.rest.shipment.CreateShipmentRequest;
-import com.mihenze.mscurse.deliveryservice.rest.shipment.ShipmentResponse;
-import com.mihenze.mscurse.deliveryservice.rest.shipment.UpdateShipmentRequest;
+import com.mihenze.mscurse.deliveryservice.rest.trackingevent.CreateTrackingEventRequest;
+import com.mihenze.mscurse.deliveryservice.rest.trackingevent.TrackingEventResponse;
+import com.mihenze.mscurse.deliveryservice.rest.trackingevent.UpdateTrackingEventRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,13 +15,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-@Tag(name = "Delivery Service API - shipment", description = "Сервис Доставки - отправление")
-public interface ShipmentControllerDoc {
-    @Operation(summary = "Получить полную информацию об отправлении по id")
+@Tag(name = "Delivery Service API - tracking", description = "Сервис Доставки - отслеживание")
+public interface TrackingEventControllerDoc {
+    @Operation(summary = "Получить отслеживание по id")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Информация об отправлении получена",
+            @ApiResponse(responseCode = "200", description = "Информация об отслеживании получена",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ShipmentResponse.class))),
+                            schema = @Schema(implementation = TrackingEventResponse.class))),
             @ApiResponse(responseCode = "404", description = "Оплата не найдена",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = DeliveryErrorResponse.class))),
@@ -29,13 +29,13 @@ public interface ShipmentControllerDoc {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = DeliveryErrorResponse.class)))
     })
-    ResponseEntity<ShipmentResponse> getShipment(@Parameter(description = "Идентификатор отправления") Long id);
+    ResponseEntity<TrackingEventResponse> getTrackingEvent(@Parameter(description = "Идентификатор отслеживания") Long id);
 
-    @Operation(summary = "Создать отправление")
+    @Operation(summary = "Создать отслеживание")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Новое отправление успешно создано",
+            @ApiResponse(responseCode = "200", description = "Новое отслеживание успешно создано",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ShipmentResponse.class))),
+                            schema = @Schema(implementation = TrackingEventResponse.class))),
             @ApiResponse(responseCode = "400", description = "Переданы некорректные данные",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = DeliveryErrorResponse.class))),
@@ -43,13 +43,15 @@ public interface ShipmentControllerDoc {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = DeliveryErrorResponse.class)))
     })
-    ResponseEntity<ShipmentResponse> createShipment(@RequestBody CreateShipmentRequest request);
+    ResponseEntity<TrackingEventResponse> createTrackingEvent(
+            @Parameter(description = "Идентификатор отправления") Long shipmentId,
+            @RequestBody CreateTrackingEventRequest request);
 
-    @Operation(summary = "Обновить отправление")
+    @Operation(summary = "Обновить отслеживание")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Отправление успешно обновлено",
+            @ApiResponse(responseCode = "200", description = "Отслеживание успешно обновлено",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ShipmentResponse.class))),
+                            schema = @Schema(implementation = TrackingEventResponse.class))),
             @ApiResponse(responseCode = "400", description = "Переданы некорректные данные",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = DeliveryErrorResponse.class))),
@@ -57,16 +59,16 @@ public interface ShipmentControllerDoc {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = DeliveryErrorResponse.class)))
     })
-    ResponseEntity<ShipmentResponse> updateShipment(@RequestBody UpdateShipmentRequest request);
-    @Operation(summary = "Удалить отправление")
+    ResponseEntity<TrackingEventResponse> updateTrackingEvent(@RequestBody UpdateTrackingEventRequest request);
+    @Operation(summary = "Удалить отслеживание")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Отправление успешно удалено"),
-            @ApiResponse(responseCode = "404", description = "Отправление не найдено",
+            @ApiResponse(responseCode = "200", description = "Отслеживание успешно удалено"),
+            @ApiResponse(responseCode = "404", description = "Отслеживание не найдено",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = DeliveryErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "Ошибка сервера",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = DeliveryErrorResponse.class)))
     })
-    ResponseEntity<Void> deleteShipment(@Parameter(description = "Идентификатор отправления") Long id);
+    ResponseEntity<Void> deleteTrackingEvent(@Parameter(description = "Идентификатор отслеживания") Long id);
 }

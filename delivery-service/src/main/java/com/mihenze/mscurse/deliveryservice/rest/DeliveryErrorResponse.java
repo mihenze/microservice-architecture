@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ShipmentErrorResponse {
+public class DeliveryErrorResponse {
     @Schema(description = "Описание ошибки", example = "Заказ не найден")
     private String message;
     @Schema(description = "Пояснения о причинах ошибки")

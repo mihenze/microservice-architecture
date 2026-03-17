@@ -1,4 +1,4 @@
-package com.mihenze.mscurse.deliveryservice.rest.shipment;
+package com.mihenze.mscurse.deliveryservice.rest.packages;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonTypeName;

@@ -6,13 +6,17 @@ servers:
 - url: http://localhost:8003
   description: Generated server url
 tags:
-- name: Shipment Service API
-  description: Сервис Доставки
+- name: Delivery Service API - package
+  description: Сервис Доставки - посылка
+- name: Delivery Service API - shipment
+  description: Сервис Доставки - отправление
+- name: Delivery Service API - tracking
+  description: Сервис Доставки - отслеживание
 paths:
   /api/v1/shipments:
     put:
       tags:
-      - Shipment Service API
+      - Delivery Service API - shipment
       summary: Обновить отправление
       operationId: updateShipment
       requestBody:
@@ -27,7 +31,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ShipmentErrorResponse"
+                $ref: "#/components/schemas/DeliveryErrorResponse"
         "200":
           description: Отправление успешно обновлено
           content:
@@ -39,10 +43,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ShipmentErrorResponse"
+                $ref: "#/components/schemas/DeliveryErrorResponse"
     post:
       tags:
-      - Shipment Service API
+      - Delivery Service API - shipment
       summary: Создать отправление
       operationId: createShipment
       requestBody:
@@ -52,28 +56,168 @@ paths:
               $ref: "#/components/schemas/CreateShipmentRequest"
         required: true
       responses:
+        "400":
+          description: Переданы некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
         "200":
           description: Новое отправление успешно создано
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ShipmentResponse"
-        "400":
-          description: Переданы некорректные данные
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ShipmentErrorResponse"
         "500":
           description: Ошибка сервера
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ShipmentErrorResponse"
+                $ref: "#/components/schemas/DeliveryErrorResponse"
+  /api/v1/shipments/{shipment_id}/tracking:
+    post:
+      tags:
+      - Delivery Service API - tracking
+      summary: Создать отслеживание
+      operationId: createTrackingEvent
+      parameters:
+      - name: shipment_id
+        in: path
+        description: Идентификатор отправления
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTrackingEventRequest"
+        required: true
+      responses:
+        "200":
+          description: Новое отслеживание успешно создано
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrackingEventResponse"
+        "400":
+          description: Переданы некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
+  /api/v1/shipments/{shipment_id}/packages:
+    post:
+      tags:
+      - Delivery Service API - package
+      summary: Создать посылку
+      operationId: createPackage
+      parameters:
+      - name: shipment_id
+        in: path
+        description: Идентификатор отправления
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePackageRequest"
+        required: true
+      responses:
+        "400":
+          description: Переданы некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
+        "200":
+          description: Новая посылка успешно создана
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PackageResponse"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
+  /api/v1/shipments/tracking:
+    patch:
+      tags:
+      - Delivery Service API - tracking
+      summary: Обновить отслеживание
+      operationId: updateTrackingEvent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTrackingEventRequest"
+        required: true
+      responses:
+        "200":
+          description: Отслеживание успешно обновлено
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrackingEventResponse"
+        "400":
+          description: Переданы некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
+  /api/v1/shipments/packages:
+    patch:
+      tags:
+      - Delivery Service API - package
+      summary: Обновить посылку
+      operationId: updatePackage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePackageRequest"
+        required: true
+      responses:
+        "400":
+          description: Переданы некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
+        "200":
+          description: Посылка успешно обновлена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PackageResponse"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
   /api/v1/shipments/{shipment_id}:
     get:
       tags:
-      - Shipment Service API
+      - Delivery Service API - shipment
       summary: Получить полную информацию об отправлении по id
       operationId: getShipment
       parameters:
@@ -85,6 +229,12 @@ paths:
           type: integer
           format: int64
       responses:
+        "404":
+          description: Оплата не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
         "200":
           description: Информация об отправлении получена
           content:
@@ -96,16 +246,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ShipmentErrorResponse"
-        "404":
-          description: Оплата не найдена
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ShipmentErrorResponse"
+                $ref: "#/components/schemas/DeliveryErrorResponse"
     delete:
       tags:
-      - Shipment Service API
+      - Delivery Service API - shipment
       summary: Удалить отправление
       operationId: deleteShipment
       parameters:
@@ -119,18 +263,141 @@ paths:
       responses:
         "200":
           description: Отправление успешно удалено
-        "500":
-          description: Ошибка сервера
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ShipmentErrorResponse"
         "404":
           description: Отправление не найдено
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ShipmentErrorResponse"
+                $ref: "#/components/schemas/DeliveryErrorResponse"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
+  /api/v1/shipments/tracking/{tracking_id}:
+    get:
+      tags:
+      - Delivery Service API - tracking
+      summary: Получить отслеживание по id
+      operationId: getTrackingEvent
+      parameters:
+      - name: tracking_id
+        in: path
+        description: Идентификатор отслеживания
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Информация об отслеживании получена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrackingEventResponse"
+        "404":
+          description: Оплата не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
+  /api/v1/shipments/packages/{package_id}:
+    get:
+      tags:
+      - Delivery Service API - package
+      summary: Получить посылку по id
+      operationId: getPackage
+      parameters:
+      - name: package_id
+        in: path
+        description: Идентификатор посылки
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "404":
+          description: Оплата не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
+        "200":
+          description: Посылка получена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PackageResponse"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
+    delete:
+      tags:
+      - Delivery Service API - package
+      summary: Удалить посылку
+      operationId: deletePackage
+      parameters:
+      - name: package_id
+        in: path
+        description: Идентификатор посылки
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "404":
+          description: Посылка не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
+        "200":
+          description: Посылка успешно удалена
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
+  /api/v1/shipments/{tracking_id}:
+    delete:
+      tags:
+      - Delivery Service API - tracking
+      summary: Удалить отслеживание
+      operationId: deleteTrackingEvent
+      parameters:
+      - name: tracking_id
+        in: path
+        description: Идентификатор отслеживания
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Отслеживание успешно удалено
+        "404":
+          description: Отслеживание не найдено
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
 components:
   schemas:
     DeliveryMethodEnum:
@@ -183,7 +450,7 @@ components:
         deliveryMethod:
           $ref: "#/components/schemas/DeliveryMethodEnum"
       description: Обновить текущее отправление
-    ShipmentErrorResponse:
+    DeliveryErrorResponse:
       type: object
       properties:
         message:
@@ -416,3 +683,82 @@ components:
         deliveryMethod:
           $ref: "#/components/schemas/DeliveryMethodEnum"
       description: Создать новое отправление
+    CreateTrackingEventRequest:
+      required:
+      - city
+      - description
+      - status
+      type: object
+      properties:
+        description:
+          type: string
+          description: Описание отслеживания
+        status:
+          $ref: "#/components/schemas/TrackingStatusEnum"
+        city:
+          type: string
+          description: Текущий город
+      description: Создать новое отслеживание
+    CreatePackageRequest:
+      required:
+      - dimensionUnit
+      - height
+      - length
+      - weightUnit
+      - weightValue
+      - width
+      type: object
+      properties:
+        length:
+          type: number
+          description: Длина посылки
+          format: double
+        width:
+          type: number
+          description: Ширина посылки
+          format: double
+        height:
+          type: number
+          description: Высота посылки
+          format: double
+        dimensionUnit:
+          type: string
+          description: Единицы измерения габаритов
+        weightValue:
+          type: number
+          description: Вес посылки
+          format: double
+        weightUnit:
+          type: string
+          description: Единицы измерения веса
+      description: Создать новую посылку
+    UpdateTrackingEventRequest:
+      required:
+      - city
+      - id
+      - status
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Уникальный идентификатор отслеживания
+          format: int64
+        status:
+          $ref: "#/components/schemas/TrackingStatusEnum"
+        city:
+          type: string
+          description: Текущий город
+      description: Обновить отслеживание
+    UpdatePackageRequest:
+      required:
+      - id
+      - status
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Уникальный идентификатор посылки
+          format: int64
+        status:
+          $ref: "#/components/schemas/PackageStatusEnum"
+      description: Обновить посылку
