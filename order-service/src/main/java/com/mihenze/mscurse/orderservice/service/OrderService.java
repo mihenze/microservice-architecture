@@ -1,5 +1,6 @@
 package com.mihenze.mscurse.orderservice.service;
 
+import com.mihenze.mscurse.orderservice.dto.OrderDto;
 import com.mihenze.mscurse.orderservice.entity.Order;
 import com.mihenze.mscurse.orderservice.entity.OrderItem;
 import com.mihenze.mscurse.orderservice.entity.OrderStatus;
@@ -28,7 +29,7 @@ public class OrderService {
     private final UidGenerateService uidGenerateService;
 
     @Transactional
-    public OrderResponse createOrder(CreateOrderRequest request) {
+    public OrderDto createOrder(OrderDto request) {
         Order order = orderMapper.mapToOrder(request);
 
         order.setStatus(OrderStatus.CREATED);
@@ -39,11 +40,11 @@ public class OrderService {
         }
 
         Order orderSaved = orderRepository.save(order);
-        return orderMapper.mapToOrderResponse(orderSaved);
+        return orderMapper.mapToOrderDto(orderSaved);
     }
 
     @Transactional
-    public OrderResponse updateOrder(UpdateOrderRequest request) {
+    public OrderDto updateOrder(OrderDto request) {
 
         if (request.getStatus() == OrderStatus.CREATED) {
             Order order = orderRepository.findByIdFetch(request.getId())
@@ -62,22 +63,22 @@ public class OrderService {
             }
 
             Order saved = orderRepository.save(order);
-            return orderMapper.mapToOrderResponse(saved);
+            return orderMapper.mapToOrderDto(saved);
         } else {
             throw new InvalidUpdateOrderException(request.getStatus());
         }
     }
 
-    public OrderResponse getOrderById(Long id) {
+    public OrderDto getOrderById(Long id) {
         Order order = orderRepository.findByIdFetch(id)
                 .orElseThrow(() -> new NotFoundOrderException(id));
 
-        return orderMapper.mapToOrderResponse(order);
+        return orderMapper.mapToOrderDto(order);
     }
 
-    public List<OrderResponse> getAllOrder() {
+    public List<OrderDto> getAllOrder() {
         List<Order> orders = orderRepository.findAllFetch();
-        return orders.stream().map(orderMapper::mapToOrderResponse).toList();
+        return orders.stream().map(orderMapper::mapToOrderDto).toList();
     }
 
     @Transactional

@@ -1,6 +1,7 @@
 package com.mihenze.mscurse.orderservice.controller;
 
 import com.mihenze.mscurse.orderservice.controller.doc.OrderControllerDoc;
+import com.mihenze.mscurse.orderservice.mapper.OrderMapper;
 import com.mihenze.mscurse.orderservice.rest.order.CreateOrderRequest;
 import com.mihenze.mscurse.orderservice.rest.order.OrderResponse;
 import com.mihenze.mscurse.orderservice.rest.order.UpdateOrderRequest;
@@ -16,29 +17,32 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderController implements OrderControllerDoc {
     private final OrderService orderService;
+    private final OrderMapper orderMapper;
 
     @PostMapping
     @Override
     public ResponseEntity<OrderResponse> createOrder(@RequestBody CreateOrderRequest request) {
-        return ResponseEntity.ok(orderService.createOrder(request));
+        return ResponseEntity.ok(orderMapper.mapToOrderResponse(orderService
+                .createOrder(orderMapper.mapToOrderDto(request))));
     }
 
     @PutMapping
     @Override
     public ResponseEntity<OrderResponse> updateOrder(@RequestBody UpdateOrderRequest request) {
-        return ResponseEntity.ok(orderService.updateOrder(request));
+        return ResponseEntity.ok(orderMapper.mapToOrderResponse(orderService
+                .updateOrder(orderMapper.mapToOrderDto(request))));
     }
 
     @GetMapping("/{order_id}")
     @Override
     public ResponseEntity<OrderResponse> getOrder(@PathVariable("order_id") Long orderId) {
-        return ResponseEntity.ok(orderService.getOrderById(orderId));
+        return ResponseEntity.ok(orderMapper.mapToOrderResponse(orderService.getOrderById(orderId)));
     }
 
     @GetMapping
     @Override
     public ResponseEntity<List<OrderResponse>> getOrders() {
-        return ResponseEntity.ok(orderService.getAllOrder());
+        return ResponseEntity.ok(orderService.getAllOrder().stream().map(orderMapper::mapToOrderResponse).toList());
     }
 
     @DeleteMapping("/{order_id}")

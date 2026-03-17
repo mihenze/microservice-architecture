@@ -1,5 +1,6 @@
 package com.mihenze.mscurse.orderservice.mapper;
 
+import com.mihenze.mscurse.orderservice.dto.OrderDto;
 import com.mihenze.mscurse.orderservice.entity.Order;
 import com.mihenze.mscurse.orderservice.rest.order.CreateOrderRequest;
 import com.mihenze.mscurse.orderservice.rest.order.OrderResponse;
@@ -8,8 +9,13 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring", uses = {OrderItemMapper.class, DeliveryAddressMapper.class})
 public interface OrderMapper {
-    OrderResponse mapToOrderResponse(Order order);
+    OrderResponse mapToOrderResponse(OrderDto order);
 
-    Order mapToOrder(CreateOrderRequest order);
-    Order mapToOrder(UpdateOrderRequest order);
+    OrderDto mapToOrderDto(Order order);
+
+    OrderDto mapToOrderDto(CreateOrderRequest order);
+
+    OrderDto mapToOrderDto(UpdateOrderRequest order);
+
+    Order mapToOrder(OrderDto order);
 }

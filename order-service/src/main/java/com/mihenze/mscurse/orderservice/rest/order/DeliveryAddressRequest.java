@@ -25,7 +25,7 @@ public class DeliveryAddressRequest {
     String street;
     @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
     @Schema(description = "Номер дома", requiredMode = Schema.RequiredMode.REQUIRED)
-    Integer houseNumber;
+    Integer building;
     @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
     @Schema(description = "Номер квартиры", requiredMode = Schema.RequiredMode.REQUIRED, nullable = true)
     Integer apartment;

@@ -32,9 +32,9 @@ public class DeliveryAddress {
     @NotBlank(message = "DeliveryAddress's street must not be null")
     private String street;
 
-    @Column(name = "house_number", nullable = false)
-    @NotNull(message = "DeliveryAddress's houseNumber must not be null")
-    private Integer houseNumber;
+    @Column(name = "building", nullable = false)
+    @NotNull(message = "DeliveryAddress's building must not be null")
+    private Integer building;
 
     @Column(name = "apartment")
     @NotNull(message = "DeliveryAddress's apartment must not be null")
