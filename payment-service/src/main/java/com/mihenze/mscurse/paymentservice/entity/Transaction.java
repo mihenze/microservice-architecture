@@ -31,7 +31,7 @@ public class Transaction {
     @Column(name = "type", nullable = false)
     @NotNull(message = "Transactional's type must not be null")
     @Enumerated(EnumType.STRING)
-    private TransactionalType type;
+    private TransactionType type;
 
     @Column(name = "amount", precision = 19, scale = 2, nullable = false)
     @NotNull(message = "Transactional's amount must not be null")

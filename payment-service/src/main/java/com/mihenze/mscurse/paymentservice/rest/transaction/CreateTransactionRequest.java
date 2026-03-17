@@ -3,7 +3,7 @@ package com.mihenze.mscurse.paymentservice.rest.transaction;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.mihenze.mscurse.paymentservice.entity.Currency;
-import com.mihenze.mscurse.paymentservice.entity.TransactionalType;
+import com.mihenze.mscurse.paymentservice.entity.TransactionType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -17,11 +17,11 @@ import java.math.BigDecimal;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonTypeName("CreateTransactionalRequest")
 @Schema(description = "Запрос на создание новой транзакции")
-public class CreateTransactionalRequest {
+public class CreateTransactionRequest {
     @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
-    @Schema(description = "Тип транзакции", example = "AUTHORIZATION", implementation = TransactionalType.class,
+    @Schema(description = "Тип транзакции", example = "AUTHORIZATION", implementation = TransactionType.class,
             requiredMode = Schema.RequiredMode.REQUIRED)
-    TransactionalType type;
+    TransactionType type;
 
     @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
     @Schema(description = "Цена", requiredMode = Schema.RequiredMode.REQUIRED)

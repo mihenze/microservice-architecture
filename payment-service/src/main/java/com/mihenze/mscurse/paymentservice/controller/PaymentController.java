@@ -1,12 +1,14 @@
 package com.mihenze.mscurse.paymentservice.controller;
 
 import com.mihenze.mscurse.paymentservice.controller.doc.PaymentControllerDoc;
+import com.mihenze.mscurse.paymentservice.mapper.PaymentMapper;
+import com.mihenze.mscurse.paymentservice.mapper.TransactionMapper;
 import com.mihenze.mscurse.paymentservice.rest.payment.CreatePaymentRequest;
 import com.mihenze.mscurse.paymentservice.rest.payment.PaymentResponse;
 import com.mihenze.mscurse.paymentservice.rest.payment.UpdatePaymentRequest;
-import com.mihenze.mscurse.paymentservice.rest.transaction.CreateTransactionalRequest;
-import com.mihenze.mscurse.paymentservice.rest.transaction.TransactionalResponse;
-import com.mihenze.mscurse.paymentservice.rest.transaction.UpdateTransactionalRequest;
+import com.mihenze.mscurse.paymentservice.rest.transaction.CreateTransactionRequest;
+import com.mihenze.mscurse.paymentservice.rest.transaction.TransactionResponse;
+import com.mihenze.mscurse.paymentservice.rest.transaction.UpdateTransactionRequest;
 import com.mihenze.mscurse.paymentservice.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,23 +19,27 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PaymentController implements PaymentControllerDoc {
     private final PaymentService paymentService;
+    private final PaymentMapper paymentMapper;
+    private final TransactionMapper transactionMapper;
 
     @GetMapping("/{payment_id}")
     @Override
     public ResponseEntity<PaymentResponse> getPayment(@PathVariable("payment_id") Long id) {
-        return ResponseEntity.ok(paymentService.getPaymentById(id));
+        return ResponseEntity.ok(paymentMapper.mapToPaymentResponse(paymentService.getPaymentById(id)));
     }
 
     @PostMapping
     @Override
     public ResponseEntity<PaymentResponse> createPayment(@RequestBody CreatePaymentRequest request) {
-        return ResponseEntity.ok(paymentService.createPayment(request));
+        return ResponseEntity.ok(paymentMapper.mapToPaymentResponse(paymentService
+                .createPayment(paymentMapper.mapToPaymentDto(request))));
     }
 
     @PutMapping
     @Override
     public ResponseEntity<PaymentResponse> updatePayment(@RequestBody UpdatePaymentRequest request) {
-        return ResponseEntity.ok(paymentService.updatePayment(request));
+        return ResponseEntity.ok(paymentMapper.mapToPaymentResponse(paymentService
+                .updatePayment(paymentMapper.mapToPaymentDto(request))));
     }
 
     @DeleteMapping("/{payment_id}")
@@ -45,16 +51,18 @@ public class PaymentController implements PaymentControllerDoc {
 
     @PostMapping("/{payment_id}/transactions")
     @Override
-    public ResponseEntity<TransactionalResponse> createTransactional(@PathVariable("payment_id") Long id,
-                                                                     @RequestBody CreateTransactionalRequest request) {
-        return ResponseEntity.ok(paymentService.createTransaction(id, request));
+    public ResponseEntity<TransactionResponse> createTransactional(@PathVariable("payment_id") Long id,
+                                                                   @RequestBody CreateTransactionRequest request) {
+        return ResponseEntity.ok(transactionMapper.mapToTransactionResponse(paymentService
+                .createTransaction(id, transactionMapper.mapToTransactionDto(request))));
     }
 
     @PatchMapping("/{payment_id}/transactions")
     @Override
-    public ResponseEntity<TransactionalResponse> updateTransactional(@PathVariable("payment_id") Long id,
-                                                                     @RequestBody UpdateTransactionalRequest request) {
-        return ResponseEntity.ok(paymentService.updateTransaction(id, request));
+    public ResponseEntity<TransactionResponse> updateTransactional(@PathVariable("payment_id") Long id,
+                                                                   @RequestBody UpdateTransactionRequest request) {
+        return ResponseEntity.ok(transactionMapper.mapToTransactionResponse(paymentService
+                .updateTransaction(id, transactionMapper.mapToTransactionDto(request))));
     }
 
     @DeleteMapping("/transactions/{transaction_id}")

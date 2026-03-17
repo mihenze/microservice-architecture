@@ -17,7 +17,7 @@ import java.time.Instant;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonTypeName("TransactionalResponse")
 @Schema(description = "Текущая транзакция")
-public class TransactionalResponse {
+public class TransactionResponse {
     @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
     @Schema(description = "Уникальный идентификатор транзакции", requiredMode = Schema.RequiredMode.REQUIRED)
     Long id;
@@ -28,9 +28,9 @@ public class TransactionalResponse {
     TransactionStatus status;
 
     @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
-    @Schema(description = "Тип транзакции", example = "AUTHORIZATION", implementation = TransactionalType.class,
+    @Schema(description = "Тип транзакции", example = "AUTHORIZATION", implementation = TransactionType.class,
             requiredMode = Schema.RequiredMode.REQUIRED)
-    TransactionalType type;
+    TransactionType type;
 
     @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
     @Schema(description = "Цена", requiredMode = Schema.RequiredMode.REQUIRED)

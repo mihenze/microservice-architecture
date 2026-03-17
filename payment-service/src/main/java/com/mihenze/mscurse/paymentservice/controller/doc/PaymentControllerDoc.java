@@ -4,9 +4,9 @@ import com.mihenze.mscurse.paymentservice.rest.PaymentErrorResponse;
 import com.mihenze.mscurse.paymentservice.rest.payment.CreatePaymentRequest;
 import com.mihenze.mscurse.paymentservice.rest.payment.PaymentResponse;
 import com.mihenze.mscurse.paymentservice.rest.payment.UpdatePaymentRequest;
-import com.mihenze.mscurse.paymentservice.rest.transaction.CreateTransactionalRequest;
-import com.mihenze.mscurse.paymentservice.rest.transaction.TransactionalResponse;
-import com.mihenze.mscurse.paymentservice.rest.transaction.UpdateTransactionalRequest;
+import com.mihenze.mscurse.paymentservice.rest.transaction.CreateTransactionRequest;
+import com.mihenze.mscurse.paymentservice.rest.transaction.TransactionResponse;
+import com.mihenze.mscurse.paymentservice.rest.transaction.UpdateTransactionRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -77,7 +77,7 @@ public interface PaymentControllerDoc {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Новая транзакция успешно создана",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = TransactionalResponse.class))),
+                            schema = @Schema(implementation = TransactionResponse.class))),
             @ApiResponse(responseCode = "400", description = "Переданы некорректные данные",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = PaymentErrorResponse.class))),
@@ -85,14 +85,14 @@ public interface PaymentControllerDoc {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = PaymentErrorResponse.class)))
     })
-    ResponseEntity<TransactionalResponse> createTransactional(@Parameter(description = "Идентификатор оплаты") Long id,
-                                                              @RequestBody CreateTransactionalRequest request);
+    ResponseEntity<TransactionResponse> createTransactional(@Parameter(description = "Идентификатор оплаты") Long id,
+                                                            @RequestBody CreateTransactionRequest request);
 
     @Operation(summary = "Обновить статус транзакции")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Транзакция успешно обновлена",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = TransactionalResponse.class))),
+                            schema = @Schema(implementation = TransactionResponse.class))),
             @ApiResponse(responseCode = "400", description = "Переданы некорректные данные",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = PaymentErrorResponse.class))),
@@ -100,8 +100,8 @@ public interface PaymentControllerDoc {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = PaymentErrorResponse.class)))
     })
-    ResponseEntity<TransactionalResponse> updateTransactional(@Parameter(description = "Идентификатор оплаты") Long id,
-                                                              @RequestBody UpdateTransactionalRequest request);
+    ResponseEntity<TransactionResponse> updateTransactional(@Parameter(description = "Идентификатор оплаты") Long id,
+                                                            @RequestBody UpdateTransactionRequest request);
 
     @Operation(summary = "Удалить транзакцию")
     @ApiResponses({

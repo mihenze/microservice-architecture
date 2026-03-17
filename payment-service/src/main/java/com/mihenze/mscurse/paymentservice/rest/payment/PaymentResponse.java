@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.mihenze.mscurse.paymentservice.entity.Currency;
 import com.mihenze.mscurse.paymentservice.entity.PaymentStatus;
 import com.mihenze.mscurse.paymentservice.entity.PaymentType;
-import com.mihenze.mscurse.paymentservice.rest.transaction.TransactionalResponse;
+import com.mihenze.mscurse.paymentservice.rest.transaction.TransactionResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -60,5 +60,5 @@ public class PaymentResponse {
     Long orderId;
 
     @Schema(description = "Список транзакций оплаты", requiredMode = Schema.RequiredMode.REQUIRED)
-    List<TransactionalResponse> transactions;
+    List<TransactionResponse> transactions;
 }
