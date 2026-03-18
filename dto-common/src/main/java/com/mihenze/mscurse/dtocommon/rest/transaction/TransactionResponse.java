@@ -1,8 +1,10 @@
-package com.mihenze.mscurse.paymentservice.rest.transaction;
+package com.mihenze.mscurse.dtocommon.rest.transaction;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.mihenze.mscurse.paymentservice.entity.*;
+import com.mihenze.mscurse.dtocommon.rest.enums.Currency;
+import com.mihenze.mscurse.dtocommon.rest.enums.TransactionStatus;
+import com.mihenze.mscurse.dtocommon.rest.enums.TransactionType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.FieldDefaults;

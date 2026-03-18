@@ -1,14 +1,14 @@
 package com.mihenze.mscurse.paymentservice.controller;
 
+import com.mihenze.mscurse.dtocommon.rest.payment.CreatePaymentRequest;
+import com.mihenze.mscurse.dtocommon.rest.payment.PaymentResponse;
+import com.mihenze.mscurse.dtocommon.rest.payment.UpdatePaymentRequest;
 import com.mihenze.mscurse.paymentservice.controller.doc.PaymentControllerDoc;
 import com.mihenze.mscurse.paymentservice.mapper.PaymentMapper;
 import com.mihenze.mscurse.paymentservice.mapper.TransactionMapper;
-import com.mihenze.mscurse.paymentservice.rest.payment.CreatePaymentRequest;
-import com.mihenze.mscurse.paymentservice.rest.payment.PaymentResponse;
-import com.mihenze.mscurse.paymentservice.rest.payment.UpdatePaymentRequest;
-import com.mihenze.mscurse.paymentservice.rest.transaction.CreateTransactionRequest;
-import com.mihenze.mscurse.paymentservice.rest.transaction.TransactionResponse;
-import com.mihenze.mscurse.paymentservice.rest.transaction.UpdateTransactionRequest;
+import com.mihenze.mscurse.dtocommon.rest.transaction.CreateTransactionRequest;
+import com.mihenze.mscurse.dtocommon.rest.transaction.TransactionResponse;
+import com.mihenze.mscurse.dtocommon.rest.transaction.UpdateTransactionRequest;
 import com.mihenze.mscurse.paymentservice.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

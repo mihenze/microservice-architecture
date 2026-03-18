@@ -1,12 +1,12 @@
 package com.mihenze.mscurse.paymentservice.controller.doc;
 
+import com.mihenze.mscurse.dtocommon.rest.payment.CreatePaymentRequest;
+import com.mihenze.mscurse.dtocommon.rest.payment.PaymentResponse;
+import com.mihenze.mscurse.dtocommon.rest.payment.UpdatePaymentRequest;
 import com.mihenze.mscurse.paymentservice.rest.PaymentErrorResponse;
-import com.mihenze.mscurse.paymentservice.rest.payment.CreatePaymentRequest;
-import com.mihenze.mscurse.paymentservice.rest.payment.PaymentResponse;
-import com.mihenze.mscurse.paymentservice.rest.payment.UpdatePaymentRequest;
-import com.mihenze.mscurse.paymentservice.rest.transaction.CreateTransactionRequest;
-import com.mihenze.mscurse.paymentservice.rest.transaction.TransactionResponse;
-import com.mihenze.mscurse.paymentservice.rest.transaction.UpdateTransactionRequest;
+import com.mihenze.mscurse.dtocommon.rest.transaction.CreateTransactionRequest;
+import com.mihenze.mscurse.dtocommon.rest.transaction.TransactionResponse;
+import com.mihenze.mscurse.dtocommon.rest.transaction.UpdateTransactionRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

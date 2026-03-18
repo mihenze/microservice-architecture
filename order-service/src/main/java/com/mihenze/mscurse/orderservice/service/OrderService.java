@@ -27,6 +27,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final UidGenerateService uidGenerateService;
+    private final FeignClientManagerService feignClientManagerService;
 
     @Transactional
     public OrderDto createOrder(OrderDto request) {
@@ -40,6 +41,10 @@ public class OrderService {
         }
 
         Order orderSaved = orderRepository.save(order);
+
+        // сформируем оплату
+        feignClientManagerService.createPayment(orderSaved.getId(), orderSaved.getCost());
+
         return orderMapper.mapToOrderDto(orderSaved);
     }
 
