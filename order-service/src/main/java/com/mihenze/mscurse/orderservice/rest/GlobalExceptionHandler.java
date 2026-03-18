@@ -1,5 +1,6 @@
 package com.mihenze.mscurse.orderservice.rest;
 
+import com.mihenze.mscurse.orderservice.exception.InternalPaymentServiceClientException;
 import com.mihenze.mscurse.orderservice.exception.InvalidUpdateOrderException;
 import com.mihenze.mscurse.orderservice.exception.NotFoundOrderException;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<OrderErrorResponse> handleInvalidUpdateOrderException(Exception exception) {
         log.error("Date:%s\nstacktrace: STACK BEGIN\n%s\nSTACK END."
                 .formatted(Instant.now(), getStringStackTrace(exception)));
-        OrderErrorResponse errorResponse = new OrderErrorResponse("Невозможно обновить заказ", exception.getMessage());
+        OrderErrorResponse errorResponse = new OrderErrorResponse("Невозможно обновить заказ",
+                exception.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InternalPaymentServiceClientException.class)
+    public ResponseEntity<OrderErrorResponse> handleInternalPaymentServiceClientException(Exception exception) {
+        OrderErrorResponse errorResponse =
+                new OrderErrorResponse("Невозможно создать заказ из-за внешнего сервиса",
+                        exception.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
@@ -35,7 +45,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<OrderErrorResponse> handleUnknownException(Exception exception) {
         log.error("Date:%s\nstacktrace: STACK BEGIN\n%s\nSTACK END."
                 .formatted(Instant.now(), getStringStackTrace(exception)));
-        OrderErrorResponse errorResponse = new OrderErrorResponse("Незадекларированная ошибка сервера", exception.getMessage());
+        OrderErrorResponse errorResponse = new OrderErrorResponse("Незадекларированная ошибка сервера",
+                exception.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

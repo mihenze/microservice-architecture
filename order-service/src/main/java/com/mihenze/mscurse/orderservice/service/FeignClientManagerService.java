@@ -3,6 +3,7 @@ package com.mihenze.mscurse.orderservice.service;
 import com.mihenze.mscurse.dtocommon.rest.payment.CreatePaymentRequest;
 import com.mihenze.mscurse.dtocommon.rest.enums.Currency;
 import com.mihenze.mscurse.dtocommon.rest.enums.PaymentType;
+import com.mihenze.mscurse.orderservice.feign.FeignExceptionHandled;
 import com.mihenze.mscurse.orderservice.feign.PaymentServiceClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import java.math.BigDecimal;
 public class FeignClientManagerService {
     private final PaymentServiceClient paymentServiceClient;
 
+    @FeignExceptionHandled
     public void createPayment(Long orderId, BigDecimal amount) {
         CreatePaymentRequest createPaymentRequest = CreatePaymentRequest.builder()
                 .type(PaymentType.CARD)
