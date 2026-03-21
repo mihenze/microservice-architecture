@@ -3,6 +3,7 @@ package com.mihenze.mscurse.paymentservice.rest;
 import com.mihenze.mscurse.paymentservice.exception.InvalidUpdatePaymentException;
 import com.mihenze.mscurse.paymentservice.exception.NotFoundPaymentException;
 import com.mihenze.mscurse.paymentservice.exception.NotFoundTransactionException;
+import com.mihenze.mscurse.paymentservice.exception.ConflictRequestProgressException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,12 +33,29 @@ public class GlobalExceptionHandler {
         PaymentErrorResponse errorResponse = new PaymentErrorResponse("Транзакция не найдена", exception.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
+
     @ExceptionHandler(InvalidUpdatePaymentException.class)
     public ResponseEntity<PaymentErrorResponse> handleInvalidUpdatePaymentException(Exception exception) {
         log.error("Date:%s\nstacktrace: STACK BEGIN\n%s\nSTACK END."
                 .formatted(Instant.now(), getStringStackTrace(exception)));
         PaymentErrorResponse errorResponse = new PaymentErrorResponse("Невозможно обновить оплату", exception.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<PaymentErrorResponse> handleIllegalArgumentException(Exception exception) {
+        log.error("Date:%s\nstacktrace: STACK BEGIN\n%s\nSTACK END."
+                .formatted(Instant.now(), getStringStackTrace(exception)));
+        PaymentErrorResponse errorResponse = new PaymentErrorResponse("Неверные параметры запроса", exception.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ConflictRequestProgressException.class)
+    public ResponseEntity<PaymentErrorResponse> handleConflictRequestProgressException(Exception exception) {
+        log.error("Date:%s\nstacktrace: STACK BEGIN\n%s\nSTACK END."
+                .formatted(Instant.now(), getStringStackTrace(exception)));
+        PaymentErrorResponse errorResponse = new PaymentErrorResponse("Запрос находится в процессе обработки", exception.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(Exception.class)

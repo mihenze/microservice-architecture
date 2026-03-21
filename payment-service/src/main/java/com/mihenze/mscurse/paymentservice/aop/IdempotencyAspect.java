@@ -2,6 +2,7 @@ package com.mihenze.mscurse.paymentservice.aop;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mihenze.mscurse.paymentservice.entity.IdempotencyStatus;
+import com.mihenze.mscurse.paymentservice.exception.ConflictRequestProgressException;
 import com.mihenze.mscurse.paymentservice.service.IdempotencyDbService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,7 @@ public class IdempotencyAspect {
         if (existing.isPresent()) {
             var entity = existing.get();
             if (entity.getIdempotencyStatus() == IdempotencyStatus.PENDING) {
-                throw new RuntimeException("Request in progress");
+                throw new ConflictRequestProgressException("Request in progress");
             }
 
             return ResponseEntity.status(entity.getStatusCode()).body(entity.getResponse());

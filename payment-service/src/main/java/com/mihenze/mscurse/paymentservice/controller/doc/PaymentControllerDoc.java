@@ -43,6 +43,9 @@ public interface PaymentControllerDoc {
             @ApiResponse(responseCode = "400", description = "Переданы некорректные данные",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = PaymentErrorResponse.class))),
+            @ApiResponse(responseCode = "409", description = "Запрос в процессе обработки",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = PaymentErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "Ошибка сервера",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = PaymentErrorResponse.class)))
