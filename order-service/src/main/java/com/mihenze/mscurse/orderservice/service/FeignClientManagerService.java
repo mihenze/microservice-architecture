@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -26,6 +27,7 @@ public class FeignClientManagerService {
                 .orderId(orderId)
                 .build();
 
-        paymentServiceClient.createPayment(createPaymentRequest);
+        paymentServiceClient.createPayment(UUID.randomUUID().toString(),
+                createPaymentRequest);
     }
 }

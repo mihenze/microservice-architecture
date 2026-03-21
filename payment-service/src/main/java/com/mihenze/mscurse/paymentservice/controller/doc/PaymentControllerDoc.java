@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @Tag(name = "Payment Service API", description = "Сервис Оплаты")
 public interface PaymentControllerDoc {
@@ -42,11 +43,15 @@ public interface PaymentControllerDoc {
             @ApiResponse(responseCode = "400", description = "Переданы некорректные данные",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = PaymentErrorResponse.class))),
+            @ApiResponse(responseCode = "409", description = "Запрос в процессе обработки",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = PaymentErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "Ошибка сервера",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = PaymentErrorResponse.class)))
     })
-    ResponseEntity<PaymentResponse> createPayment(@RequestBody CreatePaymentRequest request);
+    ResponseEntity<PaymentResponse> createPayment(@RequestHeader("X-Idempotency-Key") String idempotencyKey,
+                                                  @RequestBody CreatePaymentRequest request);
 
     @Operation(summary = "Обновить оплату")
     @ApiResponses({
