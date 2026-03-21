@@ -10,6 +10,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>dto-common</module>
     <module>order-service</module>
     <module>payment-service</module>
     <module>delivery-service</module>

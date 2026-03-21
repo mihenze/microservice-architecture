@@ -1,8 +1,8 @@
 package com.mihenze.mscurse.paymentservice.dto;
 
-import com.mihenze.mscurse.paymentservice.entity.Currency;
-import com.mihenze.mscurse.paymentservice.entity.PaymentStatus;
-import com.mihenze.mscurse.paymentservice.entity.PaymentType;
+import com.mihenze.mscurse.dtocommon.rest.enums.Currency;
+import com.mihenze.mscurse.dtocommon.rest.enums.PaymentStatus;
+import com.mihenze.mscurse.dtocommon.rest.enums.PaymentType;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

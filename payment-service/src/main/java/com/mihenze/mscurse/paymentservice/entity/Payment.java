@@ -1,5 +1,8 @@
 package com.mihenze.mscurse.paymentservice.entity;
 
+import com.mihenze.mscurse.dtocommon.rest.enums.Currency;
+import com.mihenze.mscurse.dtocommon.rest.enums.PaymentStatus;
+import com.mihenze.mscurse.dtocommon.rest.enums.PaymentType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

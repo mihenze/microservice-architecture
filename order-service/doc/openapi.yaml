@@ -42,26 +42,26 @@ paths:
               $ref: "#/components/schemas/UpdateOrderRequest"
         required: true
       responses:
-        "500":
-          description: Ошибка сервера
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OrderErrorResponse"
         "200":
           description: Заказ успешно обновлен
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/OrderResponse"
-        "400":
-          description: Переданы некорректные данные
+        "404":
+          description: Заказ не найден
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/OrderErrorResponse"
-        "404":
-          description: Заказ не найден
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderErrorResponse"
+        "400":
+          description: Переданы некорректные данные
           content:
             application/json:
               schema:
@@ -78,12 +78,6 @@ paths:
               $ref: "#/components/schemas/CreateOrderRequest"
         required: true
       responses:
-        "200":
-          description: Новый заказ успешно создан
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OrderResponse"
         "500":
           description: Ошибка сервера
           content:
@@ -96,6 +90,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/OrderErrorResponse"
+        "200":
+          description: Новый заказ успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderResponse"
   /api/v1/orders/{order_id}:
     get:
       tags:
@@ -111,24 +111,24 @@ paths:
           type: integer
           format: int64
       responses:
-        "200":
-          description: Информация о заказе получена
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OrderResponse"
-        "500":
-          description: Ошибка сервера
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OrderErrorResponse"
         "404":
           description: Заказ не найден
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/OrderErrorResponse"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderErrorResponse"
+        "200":
+          description: Информация о заказе получена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderResponse"
     delete:
       tags:
       - Order Service API
@@ -143,6 +143,12 @@ paths:
           type: integer
           format: int64
       responses:
+        "404":
+          description: Заказ не найден
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderErrorResponse"
         "500":
           description: Ошибка сервера
           content:
@@ -151,19 +157,13 @@ paths:
                 $ref: "#/components/schemas/OrderErrorResponse"
         "200":
           description: Заказ успешно удален
-        "404":
-          description: Заказ не найден
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OrderErrorResponse"
 components:
   schemas:
     DeliveryAddressRequest:
       required:
       - apartment
+      - building
       - city
-      - houseNumber
       - postcode
       - region
       - street
@@ -178,7 +178,7 @@ components:
         street:
           type: string
           description: Наименование улицы
-        houseNumber:
+        building:
           type: integer
           description: Номер дома
           format: int32
@@ -251,21 +251,11 @@ components:
         address:
           $ref: "#/components/schemas/DeliveryAddressRequest"
       description: Запрос на обновление текущей операции
-    OrderErrorResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: Описание ошибки
-          example: Заказ не найден
-        description:
-          type: string
-          description: Пояснения о причинах ошибки
     DeliveryAddressResponse:
       required:
       - apartment
+      - building
       - city
-      - houseNumber
       - id
       - postcode
       - region
@@ -285,7 +275,7 @@ components:
         street:
           type: string
           description: Наименование улицы
-        houseNumber:
+        building:
           type: integer
           description: Номер дома
           format: int32
@@ -352,6 +342,16 @@ components:
         address:
           $ref: "#/components/schemas/DeliveryAddressResponse"
       description: Текущий заказ
+    OrderErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Описание ошибки
+          example: Заказ не найден
+        description:
+          type: string
+          description: Пояснения о причинах ошибки
     CreateOrderRequest:
       required:
       - address

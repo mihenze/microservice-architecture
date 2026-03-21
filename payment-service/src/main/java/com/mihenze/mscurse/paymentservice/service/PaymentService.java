@@ -1,5 +1,8 @@
 package com.mihenze.mscurse.paymentservice.service;
 
+import com.mihenze.mscurse.dtocommon.rest.enums.PaymentStatus;
+import com.mihenze.mscurse.dtocommon.rest.enums.TransactionStatus;
+import com.mihenze.mscurse.dtocommon.rest.enums.TransactionType;
 import com.mihenze.mscurse.paymentservice.dto.PaymentDto;
 import com.mihenze.mscurse.paymentservice.dto.TransactionDto;
 import com.mihenze.mscurse.paymentservice.entity.*;
@@ -35,10 +38,22 @@ public class PaymentService {
     @Transactional
     public PaymentDto createPayment(PaymentDto request) {
         Payment payment = paymentMapper.mapToPayment(request);
-
         payment.setStatus(PaymentStatus.PENDING);
-
         Payment saved = paymentRepository.save(payment);
+
+        // создадим транзакцию
+        TransactionDto transactionDto = TransactionDto.builder()
+                .type(TransactionType.AUTHORIZATION)
+                .amount(saved.getAmount())
+                .currency(saved.getCurrency())
+                .build();
+
+        Transaction transaction = transactionMapper.mapToTransaction(transactionDto);
+        transaction.setStatus(TransactionStatus.PENDING);
+        transaction.setPayment(payment);
+
+        Transaction savedTransaction = transactionRepository.save(transaction);
+
         return paymentMapper.mapToPaymentDto(saved);
     }
 
