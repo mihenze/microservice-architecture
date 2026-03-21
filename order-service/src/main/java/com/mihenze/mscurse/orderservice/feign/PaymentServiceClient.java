@@ -6,10 +6,12 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @FeignClient(name = "payment-service", url = "http://localhost:8002/api/v1/payments")
 public interface PaymentServiceClient {
 
     @PostMapping
-    ResponseEntity <PaymentResponse> createPayment(@RequestBody CreatePaymentRequest request);
+    ResponseEntity <PaymentResponse> createPayment(@RequestHeader("X-Idempotency-Key") String idempotencyKey,
+                                                   @RequestBody CreatePaymentRequest request);
 }

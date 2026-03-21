@@ -5,6 +5,7 @@ import com.mihenze.mscurse.paymentservice.exception.NotFoundPaymentException;
 import com.mihenze.mscurse.paymentservice.exception.NotFoundTransactionException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -41,10 +42,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<PaymentErrorResponse> handleUnknownException(Exception exception) {
-        log.error("Date:%s\nstacktrace: STACK BEGIN\n%s\nSTACK END."
+        log.error("1Date:%s\nstacktrace: STACK BEGIN\n%s\nSTACK END."
                 .formatted(Instant.now(), getStringStackTrace(exception)));
         PaymentErrorResponse errorResponse = new PaymentErrorResponse("Незадекларированная ошибка сервера", exception.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(errorResponse);
     }
 
     private String getStringStackTrace(Exception e) {
