@@ -55,7 +55,7 @@ public class Payment {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @Column(name = "order_id", nullable = false)
+    @Column(name = "order_id", nullable = false, unique = true)
     @NotNull(message = "Payment's orderId must not be null")
     private Long orderId;
 

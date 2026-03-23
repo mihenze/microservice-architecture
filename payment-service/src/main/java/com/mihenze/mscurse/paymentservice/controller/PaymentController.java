@@ -3,6 +3,7 @@ package com.mihenze.mscurse.paymentservice.controller;
 import com.mihenze.mscurse.dtocommon.rest.payment.CreatePaymentRequest;
 import com.mihenze.mscurse.dtocommon.rest.payment.PaymentResponse;
 import com.mihenze.mscurse.dtocommon.rest.payment.UpdatePaymentRequest;
+import com.mihenze.mscurse.paymentservice.aop.Idempotent;
 import com.mihenze.mscurse.paymentservice.controller.doc.PaymentControllerDoc;
 import com.mihenze.mscurse.paymentservice.mapper.PaymentMapper;
 import com.mihenze.mscurse.paymentservice.mapper.TransactionMapper;
@@ -28,9 +29,11 @@ public class PaymentController implements PaymentControllerDoc {
         return ResponseEntity.ok(paymentMapper.mapToPaymentResponse(paymentService.getPaymentById(id)));
     }
 
+    @Idempotent
     @PostMapping
     @Override
-    public ResponseEntity<PaymentResponse> createPayment(@RequestBody CreatePaymentRequest request) {
+    public ResponseEntity<PaymentResponse> createPayment(@RequestHeader("X-Idempotency-Key") String idempotencyKey,
+                                                         @RequestBody CreatePaymentRequest request) {
         return ResponseEntity.ok(paymentMapper.mapToPaymentResponse(paymentService
                 .createPayment(paymentMapper.mapToPaymentDto(request))));
     }
