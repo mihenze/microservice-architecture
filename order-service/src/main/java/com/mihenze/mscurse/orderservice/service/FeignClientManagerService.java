@@ -5,6 +5,8 @@ import com.mihenze.mscurse.dtocommon.rest.enums.Currency;
 import com.mihenze.mscurse.dtocommon.rest.enums.PaymentType;
 import com.mihenze.mscurse.orderservice.feign.FeignExceptionHandled;
 import com.mihenze.mscurse.orderservice.feign.PaymentServiceClient;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,8 @@ import java.util.UUID;
 public class FeignClientManagerService {
     private final PaymentServiceClient paymentServiceClient;
 
+    @Retry(name = "paymentServiceRetry")
+    @CircuitBreaker(name = "paymentServiceCircuitBreaker")
     @FeignExceptionHandled
     public void createPayment(Long orderId, BigDecimal amount) {
         CreatePaymentRequest createPaymentRequest = CreatePaymentRequest.builder()
