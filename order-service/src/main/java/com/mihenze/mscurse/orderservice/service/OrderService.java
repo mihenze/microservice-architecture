@@ -12,6 +12,7 @@ import com.mihenze.mscurse.orderservice.rest.order.CreateOrderRequest;
 import com.mihenze.mscurse.orderservice.rest.order.OrderResponse;
 import com.mihenze.mscurse.orderservice.rest.order.UpdateOrderRequest;
 import com.mihenze.mscurse.orderservice.util.UidGenerateService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class OrderService {
     private final UidGenerateService uidGenerateService;
     private final FeignClientManagerService feignClientManagerService;
 
+    @CircuitBreaker(name = "orderServiceCircuitBreaker", fallbackMethod = "fallbackCreateOrder")
     @Transactional
     public OrderDto createOrder(OrderDto request) {
         Order order = orderMapper.mapToOrder(request);
@@ -93,5 +95,23 @@ public class OrderService {
         }
 
         orderRepository.deleteById(id);
+    }
+
+    @Transactional
+    public OrderDto fallbackCreateOrder(OrderDto request, Throwable ex) {
+        log.error("Payment service unavailable. Fallback triggered for createOrder", ex);
+
+        // создаём заказ БЕЗ оплаты
+        Order order = orderMapper.mapToOrder(request);
+        order.setStatus(OrderStatus.CREATED);
+        order.setUid(uidGenerateService.generateUid());
+
+        if (order.getItems() != null) {
+            order.getItems().forEach(item -> item.setOrder(order));
+        }
+
+        Order saved = orderRepository.save(order);
+
+        return orderMapper.mapToOrderDto(saved);
     }
 }
