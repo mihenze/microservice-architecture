@@ -32,3 +32,14 @@ logging:
       max-file-size: 10MB
       total-size-cap: 100MB
       max-history: 10
+
+rate-limiter:
+  methods:
+    createPayment:
+      limit: 50             # макс токенов в бакете
+      refresh-period: 1m    # интервал обновления токенов
+      timeout: 5s           # сколько ждать токен
+    updatePayment:
+      limit: 20
+      refresh-period: 1m
+      timeout: 2s
