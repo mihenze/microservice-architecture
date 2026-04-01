@@ -24,6 +24,7 @@
 		<h2.version>2.3.232</h2.version>
 		<swagger.version>2.7.0</swagger.version>
 		<resilience4j.version>2.2.0</resilience4j.version>
+		<wiremock.version>4.1.0</wiremock.version>
 
 		<springdoc-openapi-maven-plugin.version>1.5</springdoc-openapi-maven-plugin.version>
 	</properties>
@@ -83,10 +84,17 @@
 			<version>${lombok.version}</version>
 			<scope>provided</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.wiremock.integrations</groupId>
+			<artifactId>wiremock-spring-boot</artifactId>
+			<version>${wiremock.version}</version>
 		</dependency>
 
 		<dependency>
