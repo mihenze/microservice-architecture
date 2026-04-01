@@ -1,9 +1,6 @@
 package com.mihenze.mscurse.paymentservice.rest;
 
-import com.mihenze.mscurse.paymentservice.exception.InvalidUpdatePaymentException;
-import com.mihenze.mscurse.paymentservice.exception.NotFoundPaymentException;
-import com.mihenze.mscurse.paymentservice.exception.NotFoundTransactionException;
-import com.mihenze.mscurse.paymentservice.exception.ConflictRequestProgressException;
+import com.mihenze.mscurse.paymentservice.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -56,6 +53,14 @@ public class GlobalExceptionHandler {
                 .formatted(Instant.now(), getStringStackTrace(exception)));
         PaymentErrorResponse errorResponse = new PaymentErrorResponse("Запрос находится в процессе обработки", exception.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(RateLimitExceededException.class)
+    public ResponseEntity<PaymentErrorResponse> handleRateLimitExceededException(Exception exception) {
+        log.error("Date:%s\nstacktrace: STACK BEGIN\n%s\nSTACK END."
+                .formatted(Instant.now(), getStringStackTrace(exception)));
+        PaymentErrorResponse errorResponse = new PaymentErrorResponse("Слишком много запросов с одного ip адреса", exception.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.TOO_MANY_REQUESTS);
     }
 
     @ExceptionHandler(Exception.class)
