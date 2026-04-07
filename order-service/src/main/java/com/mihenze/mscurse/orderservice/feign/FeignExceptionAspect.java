@@ -1,5 +1,7 @@
 package com.mihenze.mscurse.orderservice.feign;
 
+import com.mihenze.mscurse.orderservice.exception.ClientBadRequestException;
+import com.mihenze.mscurse.orderservice.exception.ClientConflictException;
 import com.mihenze.mscurse.orderservice.exception.InternalPaymentServiceClientException;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +24,7 @@ public class FeignExceptionAspect {
         }
     }
 
-    private InternalPaymentServiceClientException handleFeignException(
+    private Exception handleFeignException(
             Throwable cause,
             String methodName) {
         FeignException feignException = (FeignException) cause;
@@ -38,6 +40,14 @@ public class FeignExceptionAspect {
 
         log.error("Feign error (method={}, status={}, body={})",
                 methodName, status, responseBody, cause);
+
+        if (status == 400) {
+            return new ClientBadRequestException(feignException.getMessage());
+        }
+
+        if (status == 409) {
+            return new ClientConflictException(feignException.getMessage());
+        }
 
         return new InternalPaymentServiceClientException("Fallback: payment service is temporarily unavailable");
     }

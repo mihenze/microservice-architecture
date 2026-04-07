@@ -1,0 +1,11 @@
+{
+  "id": 1,
+  "status": "PENDING",
+  "type": "CARD",
+  "amount": 22.5,
+  "currency": "RUB",
+  "createdAt": "2025-09-25T01:11:36Z",
+  "updatedAt": "2025-09-25T01:11:36Z",
+  "orderId": 1,
+  "transactions": []
+}
