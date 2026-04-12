@@ -8,9 +8,6 @@ import com.mihenze.mscurse.orderservice.exception.InvalidUpdateOrderException;
 import com.mihenze.mscurse.orderservice.exception.NotFoundOrderException;
 import com.mihenze.mscurse.orderservice.mapper.OrderMapper;
 import com.mihenze.mscurse.orderservice.repository.OrderRepository;
-import com.mihenze.mscurse.orderservice.rest.order.CreateOrderRequest;
-import com.mihenze.mscurse.orderservice.rest.order.OrderResponse;
-import com.mihenze.mscurse.orderservice.rest.order.UpdateOrderRequest;
 import com.mihenze.mscurse.orderservice.util.UidGenerateService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +25,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final UidGenerateService uidGenerateService;
-    private final FeignClientManagerService feignClientManagerService;
+    private final SenderService senderService;
 
     @CircuitBreaker(name = "orderServiceCircuitBreaker", fallbackMethod = "fallbackCreateOrder")
     @Transactional
@@ -45,7 +42,7 @@ public class OrderService {
         Order orderSaved = orderRepository.save(order);
 
         // сформируем оплату
-        feignClientManagerService.createPayment(orderSaved.getId(), orderSaved.getCost());
+        senderService.createPayment(orderSaved.getId(), orderSaved.getCost());
 
         return orderMapper.mapToOrderDto(orderSaved);
     }
