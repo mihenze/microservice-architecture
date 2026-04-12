@@ -1,0 +1,21 @@
+name: micro-arch
+
+services:
+  # брокер
+  rabbitmq:
+    container_name: rabbitmq-doc
+    image: rabbitmq:4.3.0-rc.0-management-alpine
+    hostname: rabbitmq
+    restart: unless-stopped
+    environment:
+      - RABBIT_DEFAULT_USER=guest
+      - RABBIT_DEFAULT_PASS=guest
+    ports:
+      - '15672:15672'
+      - '5672:5672'
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+volumes:
+  rabbitmq_data:
+

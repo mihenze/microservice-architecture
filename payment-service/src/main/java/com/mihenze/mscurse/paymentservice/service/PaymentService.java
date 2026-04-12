@@ -3,7 +3,6 @@ package com.mihenze.mscurse.paymentservice.service;
 import com.mihenze.mscurse.dtocommon.rest.enums.PaymentStatus;
 import com.mihenze.mscurse.dtocommon.rest.enums.TransactionStatus;
 import com.mihenze.mscurse.dtocommon.rest.enums.TransactionType;
-import com.mihenze.mscurse.paymentservice.aop.RateLimitByIp;
 import com.mihenze.mscurse.paymentservice.dto.PaymentDto;
 import com.mihenze.mscurse.paymentservice.dto.TransactionDto;
 import com.mihenze.mscurse.paymentservice.entity.*;
@@ -28,6 +27,8 @@ public class PaymentService {
     private final TransactionRepository transactionRepository;
     private final PaymentMapper paymentMapper;
     private final TransactionMapper transactionMapper;
+    private final SenderService senderService;
+
 
     public PaymentDto getPaymentById(Long id) {
         Payment payment = paymentRepository.findByIdFetch(id)
@@ -36,7 +37,6 @@ public class PaymentService {
         return paymentMapper.mapToPaymentDto(payment);
     }
 
-    @RateLimitByIp
     @Transactional
     public PaymentDto createPayment(PaymentDto request) {
         Payment payment = paymentMapper.mapToPayment(request);
@@ -56,10 +56,11 @@ public class PaymentService {
 
         Transaction savedTransaction = transactionRepository.save(transaction);
 
+        senderService.sendPaymentInfo(paymentMapper.mapToPaymentDto(saved));
+
         return paymentMapper.mapToPaymentDto(saved);
     }
 
-    @RateLimitByIp
     @Transactional
     public PaymentDto updatePayment(PaymentDto request) {
         Payment payment = paymentRepository.findByIdFetch(request.getId())

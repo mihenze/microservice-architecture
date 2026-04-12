@@ -16,6 +16,24 @@ spring:
     console:
       enabled: true
       path: /h2-console
+  cloud:
+    function:
+      definition: orderProduce;paymentConsume
+    stream:
+      bindings:
+        orderProduce-out-0:
+          destination: micro-order
+          producer:
+            required-groups: order-queue
+        paymentConsume-in-0:
+          destination: micro-payment
+          group: payment-queue
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
 
 logging:
   level:
