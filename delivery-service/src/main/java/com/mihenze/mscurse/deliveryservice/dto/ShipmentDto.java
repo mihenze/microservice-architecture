@@ -1,7 +1,7 @@
 package com.mihenze.mscurse.deliveryservice.dto;
 
-import com.mihenze.mscurse.deliveryservice.entity.DeliveryMethod;
-import com.mihenze.mscurse.deliveryservice.entity.ShipmentStatus;
+import com.mihenze.mscurse.dtocommon.rest.enums.DeliveryMethod;
+import com.mihenze.mscurse.dtocommon.rest.enums.ShipmentStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

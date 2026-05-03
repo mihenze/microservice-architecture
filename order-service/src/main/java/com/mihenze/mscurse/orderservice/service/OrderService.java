@@ -111,4 +111,12 @@ public class OrderService {
 
         return orderMapper.mapToOrderDto(saved);
     }
+
+    @Transactional
+    public void updateOrderStatus(Long id, OrderStatus orderStatus) {
+        Order order = orderRepository.findByIdFetch(id)
+                .orElseThrow(() -> new NotFoundOrderException(id));
+
+        order.setStatus(orderStatus);
+    }
 }

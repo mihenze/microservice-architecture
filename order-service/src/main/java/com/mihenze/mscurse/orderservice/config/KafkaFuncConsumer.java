@@ -1,7 +1,6 @@
 package com.mihenze.mscurse.orderservice.config;
 
-import com.mihenze.mscurse.dtocommon.rest.payment.PaymentResponse;
-import com.mihenze.mscurse.orderservice.service.ShipmentService;
+import com.mihenze.mscurse.dtocommon.rest.shipment.ShipmentResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -13,15 +12,12 @@ import java.util.function.Consumer;
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
-public class RabbitFuncConsumer {
-
-    private final ShipmentService shipmentService;
+public class KafkaFuncConsumer {
 
     @Bean
-    public Consumer<Message<PaymentResponse>> paymentConsume() {
+    public Consumer<Message<ShipmentResponse>> shipmentConsume() {
         return message -> {
-            log.info("Payment = {}", message.getPayload());
-            shipmentService.createShipment(message.getPayload().getOrderId());
+            log.info("Shipment = {}", message.getPayload());
         };
     }
 }

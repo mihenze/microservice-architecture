@@ -1,4 +1,4 @@
-package com.mihenze.mscurse.deliveryservice.entity;
+package com.mihenze.mscurse.dtocommon.rest.enums;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

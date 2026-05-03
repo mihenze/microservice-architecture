@@ -2,13 +2,13 @@ package com.mihenze.mscurse.deliveryservice.service;
 
 import com.mihenze.mscurse.deliveryservice.dto.PackageDto;
 import com.mihenze.mscurse.deliveryservice.entity.Package;
-import com.mihenze.mscurse.deliveryservice.entity.PackageStatus;
 import com.mihenze.mscurse.deliveryservice.entity.Shipment;
 import com.mihenze.mscurse.deliveryservice.exception.NotFoundPackageException;
 import com.mihenze.mscurse.deliveryservice.exception.NotFoundShipmentException;
 import com.mihenze.mscurse.deliveryservice.mapper.PackageMapper;
 import com.mihenze.mscurse.deliveryservice.repository.PackageRepository;
 import com.mihenze.mscurse.deliveryservice.repository.ShipmentRepository;
+import com.mihenze.mscurse.dtocommon.rest.enums.PackageStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

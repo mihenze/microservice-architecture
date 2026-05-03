@@ -1,17 +1,14 @@
 package com.mihenze.mscurse.deliveryservice.service;
 
-import com.mihenze.mscurse.deliveryservice.dto.PackageDto;
-import com.mihenze.mscurse.deliveryservice.dto.ShipmentDto;
 import com.mihenze.mscurse.deliveryservice.dto.TrackingEventDto;
 import com.mihenze.mscurse.deliveryservice.entity.Shipment;
 import com.mihenze.mscurse.deliveryservice.entity.TrackingEvent;
-import com.mihenze.mscurse.deliveryservice.entity.TrackingStatus;
 import com.mihenze.mscurse.deliveryservice.exception.NotFoundShipmentException;
 import com.mihenze.mscurse.deliveryservice.exception.NotFoundTrackingEventException;
-import com.mihenze.mscurse.deliveryservice.mapper.ShipmentMapper;
 import com.mihenze.mscurse.deliveryservice.mapper.TrackingEventMapper;
 import com.mihenze.mscurse.deliveryservice.repository.ShipmentRepository;
 import com.mihenze.mscurse.deliveryservice.repository.TrackingEventRepository;
+import com.mihenze.mscurse.dtocommon.rest.enums.TrackingStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

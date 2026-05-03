@@ -2,8 +2,8 @@ package com.mihenze.mscurse.deliveryservice.controller.doc;
 
 import com.mihenze.mscurse.deliveryservice.rest.DeliveryErrorResponse;
 import com.mihenze.mscurse.deliveryservice.rest.packages.CreatePackageRequest;
-import com.mihenze.mscurse.deliveryservice.rest.packages.PackageResponse;
 import com.mihenze.mscurse.deliveryservice.rest.packages.UpdatePackageRequest;
+import com.mihenze.mscurse.dtocommon.rest.shipment.packages.PackageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

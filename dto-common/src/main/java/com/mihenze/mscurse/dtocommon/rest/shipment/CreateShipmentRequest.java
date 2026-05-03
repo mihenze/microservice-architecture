@@ -1,8 +1,8 @@
-package com.mihenze.mscurse.deliveryservice.rest.shipment;
+package com.mihenze.mscurse.dtocommon.rest.shipment;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.mihenze.mscurse.deliveryservice.entity.DeliveryMethod;
+import com.mihenze.mscurse.dtocommon.rest.enums.DeliveryMethod;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -11,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonTypeName("CreateShipmentRequest")
 @Schema(description = "Создать новое отправление")

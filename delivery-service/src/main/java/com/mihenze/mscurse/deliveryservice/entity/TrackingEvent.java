@@ -1,5 +1,6 @@
 package com.mihenze.mscurse.deliveryservice.entity;
 
+import com.mihenze.mscurse.dtocommon.rest.enums.TrackingStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

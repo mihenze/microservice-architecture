@@ -18,16 +18,30 @@ spring:
       path: /h2-console
   cloud:
     function:
-      definition: orderProduce;paymentConsume
+      definition: orderProduce;paymentConsume;orderProduceShipment;shipmentConsume
     stream:
       bindings:
         orderProduce-out-0:
+          binder: rabbit
           destination: micro-order
           producer:
             required-groups: order-queue
         paymentConsume-in-0:
+          binder: rabbit
           destination: micro-payment
           group: payment-queue
+        orderProduceShipment-out-0:
+          binder: kafka
+          destination: create-shipment-topic
+        shipmentConsume-in-0:
+          binder: kafka
+          destination: shipment-response-topic
+          group: shipment-group
+          consumer:
+            autoCommitOffset: true
+      kafka:
+        binder:
+          brokers: localhost:9093
   rabbitmq:
     host: localhost
     port: 5672

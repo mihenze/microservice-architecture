@@ -1,11 +1,11 @@
-package com.mihenze.mscurse.deliveryservice.rest.shipment;
+package com.mihenze.mscurse.dtocommon.rest.shipment;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.mihenze.mscurse.deliveryservice.entity.DeliveryMethod;
-import com.mihenze.mscurse.deliveryservice.entity.ShipmentStatus;
-import com.mihenze.mscurse.deliveryservice.rest.packages.PackageResponse;
-import com.mihenze.mscurse.deliveryservice.rest.trackingevent.TrackingEventResponse;
+import com.mihenze.mscurse.dtocommon.rest.enums.DeliveryMethod;
+import com.mihenze.mscurse.dtocommon.rest.enums.ShipmentStatus;
+import com.mihenze.mscurse.dtocommon.rest.shipment.packages.PackageResponse;
+import com.mihenze.mscurse.dtocommon.rest.shipment.trackingevent.TrackingEventResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.FieldDefaults;

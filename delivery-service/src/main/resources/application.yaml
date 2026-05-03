@@ -8,14 +8,29 @@ spring:
     driverClassName: org.h2.Driver
     username: user
     password: user
-    jpa:
-      hibernate:
-        ddl-auto: update
-      show-sql: true
-    h2:
-      console:
-        enabled: true
-        path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  cloud:
+    function:
+      definition: shipmentConsume;shipmentProduce
+    stream:
+      bindings:
+        shipmentConsume-in-0:
+          destination: create-shipment-topic
+          group: create-shipment-group
+          consumer:
+            autoCommitOffset: true
+        shipmentProduce-out-0:
+          destination: shipment-response-topic
+      kafka:
+        binder:
+          brokers: localhost:9093
 
 logging:
   level:

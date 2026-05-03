@@ -1,6 +1,6 @@
-package com.mihenze.mscurse.paymentservice.config;
+package com.mihenze.mscurse.deliveryservice.config;
 
-import com.mihenze.mscurse.dtocommon.rest.payment.PaymentResponse;
+import com.mihenze.mscurse.dtocommon.rest.shipment.ShipmentResponse;
 import lombok.Getter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,12 +13,12 @@ import java.util.function.Supplier;
 
 @Configuration
 @Getter
-public class RabbitFuncProducer {
-    private Sinks.Many<Message<PaymentResponse>> paymentStream =
+public class KafkaFuncProducer {
+    private Sinks.Many<Message<ShipmentResponse>> shipmentStream =
             Sinks.many().multicast().onBackpressureBuffer(Queues.SMALL_BUFFER_SIZE, false);
 
     @Bean
-    public Supplier<Flux<Message<PaymentResponse>>> paymentProduce() {
-        return () -> paymentStream.asFlux(); //считываем данные из потока Flux
+    public Supplier<Flux<Message<ShipmentResponse>>> shipmentProduce() {
+        return () -> shipmentStream.asFlux(); //считываем данные из потока Flux
     }
 }

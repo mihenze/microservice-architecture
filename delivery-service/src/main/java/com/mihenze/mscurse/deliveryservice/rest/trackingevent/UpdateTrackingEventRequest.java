@@ -2,12 +2,10 @@ package com.mihenze.mscurse.deliveryservice.rest.trackingevent;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.mihenze.mscurse.deliveryservice.entity.TrackingStatus;
+import com.mihenze.mscurse.dtocommon.rest.enums.TrackingStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.Instant;
 
 @Getter
 @Setter
