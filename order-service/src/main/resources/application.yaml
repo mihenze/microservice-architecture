@@ -22,19 +22,15 @@ spring:
     stream:
       bindings:
         orderProduce-out-0:
-          binder: rabbit
-          destination: micro-order
-          producer:
-            required-groups: order-queue
+          destination: create-payment-topic
         paymentConsume-in-0:
-          binder: rabbit
-          destination: micro-payment
-          group: payment-queue
+          destination: payment-response-topic
+          group: payment-group
+          consumer:
+            autoCommitOffset: true
         orderProduceShipment-out-0:
-          binder: kafka
           destination: create-shipment-topic
         shipmentConsume-in-0:
-          binder: kafka
           destination: shipment-response-topic
           group: shipment-group
           consumer:
@@ -42,12 +38,6 @@ spring:
       kafka:
         binder:
           brokers: localhost:9093
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
-    virtual-host: /
 
 logging:
   level:

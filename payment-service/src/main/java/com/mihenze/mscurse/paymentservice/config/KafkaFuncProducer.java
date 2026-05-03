@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 @Configuration
 @Getter
-public class RabbitFuncProducer {
+public class KafkaFuncProducer {
     private Sinks.Many<Message<PaymentResponse>> paymentStream =
             Sinks.many().multicast().onBackpressureBuffer(Queues.SMALL_BUFFER_SIZE, false);
 
