@@ -1,6 +1,6 @@
 package com.mihenze.mscurse.deliveryservice.dto;
 
-import com.mihenze.mscurse.deliveryservice.entity.PackageStatus;
+import com.mihenze.mscurse.dtocommon.rest.enums.PackageStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

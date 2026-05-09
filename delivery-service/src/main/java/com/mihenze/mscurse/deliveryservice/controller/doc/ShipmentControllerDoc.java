@@ -1,9 +1,9 @@
 package com.mihenze.mscurse.deliveryservice.controller.doc;
 
 import com.mihenze.mscurse.deliveryservice.rest.DeliveryErrorResponse;
-import com.mihenze.mscurse.deliveryservice.rest.shipment.CreateShipmentRequest;
-import com.mihenze.mscurse.deliveryservice.rest.shipment.ShipmentResponse;
 import com.mihenze.mscurse.deliveryservice.rest.shipment.UpdateShipmentRequest;
+import com.mihenze.mscurse.dtocommon.rest.shipment.CreateShipmentRequest;
+import com.mihenze.mscurse.dtocommon.rest.shipment.ShipmentResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

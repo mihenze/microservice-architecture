@@ -3,7 +3,6 @@ package com.mihenze.mscurse.deliveryservice.service;
 import com.mihenze.mscurse.deliveryservice.dto.ShipmentDto;
 import com.mihenze.mscurse.deliveryservice.entity.Package;
 import com.mihenze.mscurse.deliveryservice.entity.Shipment;
-import com.mihenze.mscurse.deliveryservice.entity.ShipmentStatus;
 import com.mihenze.mscurse.deliveryservice.entity.TrackingEvent;
 import com.mihenze.mscurse.deliveryservice.exception.InvalidUpdateShipmentException;
 import com.mihenze.mscurse.deliveryservice.exception.NotFoundShipmentException;
@@ -12,6 +11,7 @@ import com.mihenze.mscurse.deliveryservice.repository.PackageRepository;
 import com.mihenze.mscurse.deliveryservice.repository.ShipmentRepository;
 import com.mihenze.mscurse.deliveryservice.repository.TrackingEventRepository;
 import com.mihenze.mscurse.deliveryservice.util.TrackingNumberGenerator;
+import com.mihenze.mscurse.dtocommon.rest.enums.ShipmentStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,6 +29,7 @@ public class ShipmentService {
     private final TrackingEventRepository trackingEventRepository;
     private final ShipmentMapper shipmentMapper;
     private final TrackingNumberGenerator trackingNumberGenerator;
+    private final SenderService senderService;
 
     public ShipmentDto getShipmentById(Long id) {
         Shipment shipment = shipmentRepository.findById(id)
@@ -51,6 +52,9 @@ public class ShipmentService {
         newShipment.setTrackingNumber(trackingNumberGenerator.generate());
 
         Shipment saved = shipmentRepository.save(newShipment);
+
+        senderService.sendShipmentInfo(shipmentMapper.mapToShipmentDto(saved));
+
         return shipmentMapper.mapToShipmentDto(saved);
     }
 

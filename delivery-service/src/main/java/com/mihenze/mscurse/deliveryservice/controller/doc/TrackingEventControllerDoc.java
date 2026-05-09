@@ -2,8 +2,8 @@ package com.mihenze.mscurse.deliveryservice.controller.doc;
 
 import com.mihenze.mscurse.deliveryservice.rest.DeliveryErrorResponse;
 import com.mihenze.mscurse.deliveryservice.rest.trackingevent.CreateTrackingEventRequest;
-import com.mihenze.mscurse.deliveryservice.rest.trackingevent.TrackingEventResponse;
 import com.mihenze.mscurse.deliveryservice.rest.trackingevent.UpdateTrackingEventRequest;
+import com.mihenze.mscurse.dtocommon.rest.shipment.trackingevent.TrackingEventResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

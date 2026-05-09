@@ -2,10 +2,10 @@ package com.mihenze.mscurse.deliveryservice.controller;
 
 import com.mihenze.mscurse.deliveryservice.controller.doc.ShipmentControllerDoc;
 import com.mihenze.mscurse.deliveryservice.mapper.ShipmentMapper;
-import com.mihenze.mscurse.deliveryservice.rest.shipment.CreateShipmentRequest;
-import com.mihenze.mscurse.deliveryservice.rest.shipment.ShipmentResponse;
 import com.mihenze.mscurse.deliveryservice.rest.shipment.UpdateShipmentRequest;
 import com.mihenze.mscurse.deliveryservice.service.ShipmentService;
+import com.mihenze.mscurse.dtocommon.rest.shipment.CreateShipmentRequest;
+import com.mihenze.mscurse.dtocommon.rest.shipment.ShipmentResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

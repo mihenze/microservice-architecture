@@ -1,5 +1,7 @@
 package com.mihenze.mscurse.deliveryservice.entity;
 
+import com.mihenze.mscurse.dtocommon.rest.enums.DeliveryMethod;
+import com.mihenze.mscurse.dtocommon.rest.enums.ShipmentStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

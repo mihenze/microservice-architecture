@@ -4,5 +4,5 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "Состояние заказа", enumAsRef = true, name = "OrderStatusEnum")
 public enum OrderStatus {
-    CREATED, CANCELED, PROCESSED, COLLECTED, DELIVERED, COMPLETED
+    CREATED, CANCELED, PAID, PROCESSED, COLLECTED, DELIVERED, COMPLETED
 }
