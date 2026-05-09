@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
-public class RabbitFuncConsumer {
+public class KafkaFuncConsumer {
     private final PaymentService paymentService;
     private final PaymentMapper paymentMapper;
 
