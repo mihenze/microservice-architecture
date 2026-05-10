@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -57,6 +59,7 @@ public class ShipmentService {
                     .payloadType(AsyncEventType.SHIPMENT_CREATED)
                     .type(AsyncMessageType.OUTBOX)
                     .status(AsyncMessageStatus.CREATED)
+                    .idempotencyKey(UUID.randomUUID())
                     .build();
 
             asyncMessageService.saveMessage(asyncMessage);

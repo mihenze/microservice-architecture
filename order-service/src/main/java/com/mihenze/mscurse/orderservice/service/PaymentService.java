@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +39,7 @@ public class PaymentService {
                     .payloadType(AsyncEventType.PAYMENT_CREATED)
                     .type(AsyncMessageType.OUTBOX)
                     .status(AsyncMessageStatus.CREATED)
+                    .idempotencyKey(UUID.randomUUID())
                     .build();
 
             asyncMessageService.saveMessage(asyncMessage);

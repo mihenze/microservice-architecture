@@ -10,4 +10,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class BindingProperties {
     private String paymentCreated;
     private String shipmentCreated;
+    private String paymentConfirm;
+    private String shipmentConfirm;
 }

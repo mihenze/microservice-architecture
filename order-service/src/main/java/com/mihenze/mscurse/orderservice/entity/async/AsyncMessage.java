@@ -42,4 +42,7 @@ public class AsyncMessage {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private AsyncMessageStatus status;
+
+    @Column(unique = true)
+    private UUID idempotencyKey;
 }

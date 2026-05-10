@@ -8,6 +8,8 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Sinks;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class SenderService {
@@ -18,6 +20,8 @@ public class SenderService {
         kafkaFuncProducer.getPaymentStream().emitNext(
                 MessageBuilder
                         .withPayload(paymentMapper.mapToPaymentResponse(paymentDto))
-                        .build(), Sinks.EmitFailureHandler.FAIL_FAST);
+                        .setHeader("X-Idempotency-Key", UUID.randomUUID().toString())
+                        .build(),
+                Sinks.EmitFailureHandler.FAIL_FAST);
     }
 }

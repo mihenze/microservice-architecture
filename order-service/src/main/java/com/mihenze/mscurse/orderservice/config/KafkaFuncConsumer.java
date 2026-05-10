@@ -1,5 +1,6 @@
 package com.mihenze.mscurse.orderservice.config;
 
+import com.mihenze.mscurse.dtocommon.rest.enums.AsyncEventType;
 import com.mihenze.mscurse.dtocommon.rest.payment.PaymentResponse;
 import com.mihenze.mscurse.dtocommon.rest.shipment.ShipmentResponse;
 import com.mihenze.mscurse.orderservice.service.ShipmentService;
@@ -17,19 +18,38 @@ import java.util.function.Consumer;
 public class KafkaFuncConsumer {
 
     private final ShipmentService shipmentService;
+    private final IdempotentMessageProcessor idempotentMessageProcessor;
+    private final BindingProperties bindingProperties;
 
     @Bean
     public Consumer<Message<PaymentResponse>> paymentConsume() {
         return message -> {
-            log.info("Payment = {}", message.getPayload());
-            shipmentService.createShipment(message.getPayload().getOrderId());
+
+            idempotentMessageProcessor.process(
+                    message,
+                    payload -> {
+                        shipmentService.createShipment(payload.getOrderId());
+                        return null;
+                    },
+                    AsyncEventType.PAYMENT_CONFIRM,
+                    bindingProperties.getPaymentConfirm()
+            );
         };
     }
 
     @Bean
     public Consumer<Message<ShipmentResponse>> shipmentConsume() {
         return message -> {
-            log.info("Shipment = {}", message.getPayload());
+
+            idempotentMessageProcessor.process(
+                    message,
+                    payload -> {
+                        log.info("Shipment = {}", payload);
+                        return null;
+                    },
+                    AsyncEventType.SHIPMENT_CONFIRM,
+                    bindingProperties.getShipmentConfirm()
+            );
         };
     }
 }
