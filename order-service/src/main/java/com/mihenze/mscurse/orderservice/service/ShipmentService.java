@@ -1,15 +1,20 @@
 package com.mihenze.mscurse.orderservice.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mihenze.mscurse.dtocommon.rest.enums.AsyncEventType;
 import com.mihenze.mscurse.dtocommon.rest.shipment.CreateShipmentRequest;
 import com.mihenze.mscurse.dtocommon.rest.enums.DeliveryMethod;
-import com.mihenze.mscurse.orderservice.config.KafkaFuncProducer;
+import com.mihenze.mscurse.orderservice.config.BindingProperties;
 import com.mihenze.mscurse.orderservice.dto.OrderDto;
 import com.mihenze.mscurse.orderservice.entity.OrderStatus;
+import com.mihenze.mscurse.orderservice.entity.async.AsyncMessage;
+import com.mihenze.mscurse.orderservice.enums.AsyncMessageStatus;
+import com.mihenze.mscurse.orderservice.enums.AsyncMessageType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Sinks;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,8 +22,11 @@ import reactor.core.publisher.Sinks;
 public class ShipmentService {
 
     private final OrderService orderService;
-    private final KafkaFuncProducer kafkaFuncProducer;
+    private final AsyncMessageService asyncMessageService;
+    private final BindingProperties bindingProperties;
+    private final ObjectMapper mapper;
 
+    @Transactional
     public void createShipment(Long orderId) {
         orderService.updateOrderStatus(orderId, OrderStatus.PAID);
 
@@ -35,9 +43,25 @@ public class ShipmentService {
                 .deliveryMethod(DeliveryMethod.COURIER)
                 .build();
 
-        kafkaFuncProducer.getOrderStreamForShipment().emitNext(
-                MessageBuilder
-                        .withPayload(createShipmentRequest)
-                        .build(), Sinks.EmitFailureHandler.FAIL_FAST);
+
+        createAndSaveOrderShipmentMessage(createShipmentRequest);
+
+    }
+
+    private void createAndSaveOrderShipmentMessage(CreateShipmentRequest createShipmentRequest) {
+
+        try {
+            AsyncMessage asyncMessage = AsyncMessage.builder()
+                    .bindingName(bindingProperties.getShipmentCreated())
+                    .value(mapper.writeValueAsString(createShipmentRequest))
+                    .payloadType(AsyncEventType.SHIPMENT_CREATED)
+                    .type(AsyncMessageType.OUTBOX)
+                    .status(AsyncMessageStatus.CREATED)
+                    .build();
+
+            asyncMessageService.saveMessage(asyncMessage);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
