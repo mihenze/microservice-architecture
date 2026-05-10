@@ -21,6 +21,8 @@ import java.util.UUID;
 =======
 >>>>>>> main
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -62,10 +64,7 @@ public class ShipmentService {
                     .payloadType(AsyncEventType.SHIPMENT_CREATED)
                     .type(AsyncMessageType.OUTBOX)
                     .status(AsyncMessageStatus.CREATED)
-<<<<<<< task11-idempotent-event
                     .idempotencyKey(UUID.randomUUID())
-=======
->>>>>>> main
                     .build();
 
             asyncMessageService.saveMessage(asyncMessage);
