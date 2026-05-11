@@ -2,6 +2,7 @@ package com.mihenze.mscurse.deliveryservice.controller.doc;
 
 import com.mihenze.mscurse.deliveryservice.rest.DeliveryErrorResponse;
 import com.mihenze.mscurse.deliveryservice.rest.shipment.UpdateShipmentRequest;
+import com.mihenze.mscurse.deliveryservice.rest.shipment.UpdateShipmentStatusRequest;
 import com.mihenze.mscurse.dtocommon.rest.shipment.CreateShipmentRequest;
 import com.mihenze.mscurse.dtocommon.rest.shipment.ShipmentResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -58,6 +59,19 @@ public interface ShipmentControllerDoc {
                             schema = @Schema(implementation = DeliveryErrorResponse.class)))
     })
     ResponseEntity<ShipmentResponse> updateShipment(@RequestBody UpdateShipmentRequest request);
+
+    @Operation(summary = "Обновить статус отправление")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Отправление успешно обновлено"),
+            @ApiResponse(responseCode = "400", description = "Переданы некорректные данные",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = DeliveryErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Ошибка сервера",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = DeliveryErrorResponse.class)))
+    })
+    ResponseEntity<Void> updateShipmentStatus(@RequestBody UpdateShipmentStatusRequest request);
+
     @Operation(summary = "Удалить отправление")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Отправление успешно удалено"),

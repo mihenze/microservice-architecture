@@ -1,5 +1,6 @@
 package com.mihenze.mscurse.paymentservice.service;
 
+import com.mihenze.mscurse.dtocommon.kafka.OrderCreationStatus;
 import com.mihenze.mscurse.dtocommon.rest.enums.PaymentStatus;
 import com.mihenze.mscurse.dtocommon.rest.enums.TransactionStatus;
 import com.mihenze.mscurse.dtocommon.rest.enums.TransactionType;
@@ -56,7 +57,7 @@ public class PaymentService {
 
         Transaction savedTransaction = transactionRepository.save(transaction);
 
-        senderService.sendPaymentInfo(paymentMapper.mapToPaymentDto(saved));
+        senderService.sendPaymentInfo(paymentMapper.mapToPaymentDto(payment), OrderCreationStatus.PAYMENT_WAITING);
 
         return paymentMapper.mapToPaymentDto(saved);
     }
@@ -77,6 +78,32 @@ public class PaymentService {
         } else {
             throw new InvalidUpdatePaymentException();
         }
+    }
+
+    @Transactional
+    public void updatePaymentStatus(Long id, PaymentStatus status) {
+        Payment payment = paymentRepository.findByIdFetch(id)
+                .orElseThrow(() -> new NotFoundPaymentException(id));
+
+        payment.setStatus(status);
+
+        OrderCreationStatus orderCreationStatus;
+        if (status == PaymentStatus.CONFIRM) {
+            orderCreationStatus = OrderCreationStatus.PAYMENT_CONFIRM;
+            senderService.sendPaymentInfo(paymentMapper.mapToPaymentDto(payment), orderCreationStatus);
+        } else if (status == PaymentStatus.FAILED) {
+            orderCreationStatus = OrderCreationStatus.PAYMENT_ABORT;
+            senderService.sendPaymentInfo(paymentMapper.mapToPaymentDto(payment), orderCreationStatus);
+        }
+    }
+
+    @Transactional
+    public void refundedPayment(PaymentDto request) {
+        Payment payment = paymentRepository.findByIdFetch(request.getId())
+                .orElseThrow(() -> new NotFoundPaymentException(request.getId()));
+
+        payment.setStatus(PaymentStatus.REFUNDED);
+        senderService.sendPaymentInfo(paymentMapper.mapToPaymentDto(payment), OrderCreationStatus.PAYMENT_REFUNDED);
     }
 
     @Transactional

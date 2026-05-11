@@ -22,12 +22,6 @@ paths:
               $ref: "#/components/schemas/UpdatePaymentRequest"
         required: true
       responses:
-        "400":
-          description: Переданы некорректные данные
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PaymentErrorResponse"
         "500":
           description: Ошибка сервера
           content:
@@ -40,11 +34,23 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PaymentResponse"
+        "400":
+          description: Переданы некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentErrorResponse"
     post:
       tags:
       - Payment Service API
       summary: Создать оплату
       operationId: createPayment
+      parameters:
+      - name: X-Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -52,8 +58,8 @@ paths:
               $ref: "#/components/schemas/CreatePaymentRequest"
         required: true
       responses:
-        "400":
-          description: Переданы некорректные данные
+        "500":
+          description: Ошибка сервера
           content:
             application/json:
               schema:
@@ -64,8 +70,41 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PaymentResponse"
+        "409":
+          description: Запрос в процессе обработки
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentErrorResponse"
+        "400":
+          description: Переданы некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentErrorResponse"
+  /api/v1/payments/status:
+    put:
+      tags:
+      - Payment Service API
+      summary: Обновить состояние оплаты
+      operationId: updatePaymentStatus
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePaymentStatusRequest"
+        required: true
+      responses:
+        "200":
+          description: Оплата успешно обновлена
         "500":
           description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentErrorResponse"
+        "400":
+          description: Переданы некорректные данные
           content:
             application/json:
               schema:
@@ -88,15 +127,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateTransactionalRequest"
+              $ref: "#/components/schemas/CreateTransactionRequest"
         required: true
       responses:
-        "400":
-          description: Переданы некорректные данные
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PaymentErrorResponse"
         "500":
           description: Ошибка сервера
           content:
@@ -108,7 +141,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TransactionalResponse"
+                $ref: "#/components/schemas/TransactionResponse"
+        "400":
+          description: Переданы некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentErrorResponse"
     patch:
       tags:
       - Payment Service API
@@ -126,15 +165,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateTransactionalRequest"
+              $ref: "#/components/schemas/UpdateTransactionRequest"
         required: true
       responses:
-        "400":
-          description: Переданы некорректные данные
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PaymentErrorResponse"
         "500":
           description: Ошибка сервера
           content:
@@ -146,7 +179,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TransactionalResponse"
+                $ref: "#/components/schemas/TransactionResponse"
+        "400":
+          description: Переданы некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentErrorResponse"
   /api/v1/payments/{payment_id}:
     get:
       tags:
@@ -162,12 +201,6 @@ paths:
           type: integer
           format: int64
       responses:
-        "500":
-          description: Ошибка сервера
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PaymentErrorResponse"
         "200":
           description: Информация об оплате получена
           content:
@@ -176,6 +209,12 @@ paths:
                 $ref: "#/components/schemas/PaymentResponse"
         "404":
           description: Оплата не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentErrorResponse"
+        "500":
+          description: Ошибка сервера
           content:
             application/json:
               schema:
@@ -194,6 +233,12 @@ paths:
           type: integer
           format: int64
       responses:
+        "404":
+          description: Оплата не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentErrorResponse"
         "500":
           description: Ошибка сервера
           content:
@@ -202,12 +247,6 @@ paths:
                 $ref: "#/components/schemas/PaymentErrorResponse"
         "200":
           description: Оплата успешно удалена
-        "404":
-          description: Оплата не найдена
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PaymentErrorResponse"
   /api/v1/payments/transactions/{transaction_id}:
     delete:
       tags:
@@ -253,10 +292,8 @@ components:
       example: PENDING
       enum:
       - PENDING
-      - AUTHORIZED
-      - CAPTURED
+      - CONFIRM
       - FAILED
-      - CANCELLED
       - REFUNDED
     PaymentTypeEnum:
       type: string
@@ -342,17 +379,9 @@ components:
           type: array
           description: Список транзакций оплаты
           items:
-            $ref: "#/components/schemas/TransactionalResponse"
+            $ref: "#/components/schemas/TransactionResponse"
       description: Текущая оплата
-    TransactionStatusEnum:
-      type: string
-      description: Статус транзакции
-      example: PENDING
-      enum:
-      - PENDING
-      - SUCCESS
-      - FAILED
-    TransactionalResponse:
+    TransactionResponse:
       required:
       - amount
       - createdAt
@@ -381,6 +410,14 @@ components:
           format: date-time
           example: 2025-09-25T01:11:36Z
       description: Текущая транзакция
+    TransactionStatusEnum:
+      type: string
+      description: Статус транзакции
+      example: PENDING
+      enum:
+      - PENDING
+      - SUCCESS
+      - FAILED
     TransactionalTypeEnum:
       type: string
       description: Тип транзакции
@@ -390,6 +427,19 @@ components:
       - CAPTURE
       - REFUND
       - CANCEL
+    UpdatePaymentStatusRequest:
+      required:
+      - id
+      - status
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Уникальный идентификатор оплаты
+          format: int64
+        status:
+          $ref: "#/components/schemas/PaymentStatusEnum"
+      description: Изменение состояния оплаты
     CreatePaymentRequest:
       required:
       - amount
@@ -410,7 +460,7 @@ components:
           description: Уникальный идентификатор заказа
           format: int64
       description: Запрос на создание новой оплаты
-    CreateTransactionalRequest:
+    CreateTransactionRequest:
       required:
       - amount
       - currency
@@ -425,7 +475,7 @@ components:
         currency:
           $ref: "#/components/schemas/CurrencyEnum"
       description: Запрос на создание новой транзакции
-    UpdateTransactionalRequest:
+    UpdateTransactionRequest:
       required:
       - id
       - status

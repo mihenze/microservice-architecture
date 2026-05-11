@@ -1,5 +1,6 @@
 package com.mihenze.mscurse.orderservice.mapper;
 
+import com.mihenze.mscurse.dtocommon.kafka.AddressData;
 import com.mihenze.mscurse.orderservice.dto.DeliveryAddressDto;
 import com.mihenze.mscurse.orderservice.entity.DeliveryAddress;
 import com.mihenze.mscurse.orderservice.rest.order.DeliveryAddressRequest;
@@ -15,4 +16,6 @@ public interface DeliveryAddressMapper {
     DeliveryAddressDto mapToDeliveryAddressDto(DeliveryAddressRequest deliveryAddress);
 
     DeliveryAddress mapToDeliveryAddress(DeliveryAddressDto deliveryAddress);
+
+    AddressData mapToAddressData(DeliveryAddressDto deliveryAddressDto);
 }

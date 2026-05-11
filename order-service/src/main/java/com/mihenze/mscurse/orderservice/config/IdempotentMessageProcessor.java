@@ -1,7 +1,6 @@
 package com.mihenze.mscurse.orderservice.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mihenze.mscurse.dtocommon.rest.enums.AsyncEventType;
 import com.mihenze.mscurse.orderservice.entity.async.AsyncMessage;
 import com.mihenze.mscurse.orderservice.enums.AsyncMessageStatus;
 import com.mihenze.mscurse.orderservice.enums.AsyncMessageType;
@@ -22,7 +21,7 @@ public class IdempotentMessageProcessor {
     private final AsyncMessageService asyncMessageService;
     private final ObjectMapper mapper;
 
-    public <T> boolean process(Message<T> message, Function<T, Void> handler, AsyncEventType eventType, String topic) {
+    public <T> boolean process(Message<T> message, Function<T, Void> handler, String topic) {
 
         String idempotencyKey =
                 HeaderUtils.getString(message, "X-Idempotency-Key");
@@ -34,7 +33,6 @@ public class IdempotentMessageProcessor {
 
         AsyncMessage inbox = AsyncMessage.builder()
                 .bindingName(topic)
-                .payloadType(eventType)
                 .value(serialize(message.getPayload()))
                 .type(AsyncMessageType.INBOX)
                 .status(AsyncMessageStatus.RECEIVED)

@@ -11,6 +11,7 @@ import com.mihenze.mscurse.deliveryservice.repository.PackageRepository;
 import com.mihenze.mscurse.deliveryservice.repository.ShipmentRepository;
 import com.mihenze.mscurse.deliveryservice.repository.TrackingEventRepository;
 import com.mihenze.mscurse.deliveryservice.util.TrackingNumberGenerator;
+import com.mihenze.mscurse.dtocommon.kafka.OrderCreationStatus;
 import com.mihenze.mscurse.dtocommon.rest.enums.ShipmentStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +54,7 @@ public class ShipmentService {
 
         Shipment saved = shipmentRepository.save(newShipment);
 
-        senderService.sendShipmentInfo(shipmentMapper.mapToShipmentDto(saved));
+        senderService.sendShipmentInfo(shipmentMapper.mapToShipmentDto(saved), OrderCreationStatus.DELIVERY_CREATED);
 
         return shipmentMapper.mapToShipmentDto(saved);
     }
@@ -80,6 +81,19 @@ public class ShipmentService {
 
         Shipment saved = shipmentRepository.save(shipmentOld);
         return shipmentMapper.mapToShipmentDto(saved);
+    }
+
+    @Transactional
+    public void updateShipmentStatus(Long id, ShipmentStatus status) {
+        Shipment shipment = shipmentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundShipmentException(id));
+
+        shipment.setStatus(status);
+        if (status == ShipmentStatus.DELIVERED) {
+            senderService.sendShipmentInfo(shipmentMapper.mapToShipmentDto(shipment), OrderCreationStatus.DELIVERY_COMPLETED);
+        } else if (status == ShipmentStatus.CANCELLED) {
+            senderService.sendShipmentInfo(shipmentMapper.mapToShipmentDto(shipment), OrderCreationStatus.DELIVERY_CANCELED);
+        }
     }
 
     @Transactional

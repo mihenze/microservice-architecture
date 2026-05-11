@@ -1,6 +1,7 @@
 package com.mihenze.mscurse.orderservice.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mihenze.mscurse.dtocommon.kafka.OrderCreationStatusMessage;
 import com.mihenze.mscurse.orderservice.entity.async.AsyncMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.stream.function.StreamBridge;
@@ -15,9 +16,8 @@ public class OutboxPublisher {
 
     public void publish(AsyncMessage message) {
         try {
-            Class<?> clazz = message.getPayloadType().getPayloadClass();
 
-            Object payload = mapper.readValue(message.getValue(), clazz);
+            Object payload = mapper.readValue(message.getValue(), OrderCreationStatusMessage.class);
 
             boolean isSent = streamBridge.send(
                     message.getBindingName(),
