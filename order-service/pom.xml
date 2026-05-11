@@ -188,6 +188,9 @@
 		<!-- Run `$ mvn verify -P with_openapi` command or activate the profile in Maven panel -->
 		<profile>
 			<id>with_openapi</id>
+			<properties>
+				<spring.profiles.active>openapi</spring.profiles.active>
+			</properties>
 			<build>
 				<plugins>
 					<plugin>
@@ -200,7 +203,10 @@
 									<artifactId>lombok</artifactId>
 								</exclude>
 							</excludes>
-							<jvmArguments>-Dspring.application.admin.enabled=true</jvmArguments>
+							<jvmArguments>
+								-Dspring.application.admin.enabled=true
+								-Dspring.profiles.active=openapi
+							</jvmArguments>
 						</configuration>
 						<executions>
 							<execution>

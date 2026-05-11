@@ -18,16 +18,16 @@ spring:
       path: /h2-console
   cloud:
     function:
-      definition: orderConsume;paymentProduce
+      definition: orderCreationStatusProducer;orderCreationStatusConsumer
     stream:
       bindings:
-        orderConsume-in-0:
-          destination: create-payment-topic
-          group: create-payment-group
+        orderCreationStatusProducer-out-0:
+          destination: order-creation-status-topic
+        orderCreationStatusConsumer-in-0:
+          destination: order-creation-status-topic
+          group: payment-group
           consumer:
             autoCommitOffset: true
-        paymentProduce-out-0:
-          destination: payment-response-topic
       kafka:
         binder:
           brokers: localhost:9093

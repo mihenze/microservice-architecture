@@ -18,16 +18,16 @@ spring:
       path: /h2-console
   cloud:
     function:
-      definition: shipmentConsume;shipmentProduce
+      definition: orderCreationStatusProducer;orderCreationStatusConsumer
     stream:
       bindings:
-        shipmentConsume-in-0:
-          destination: create-shipment-topic
-          group: create-shipment-group
+        orderCreationStatusProducer-out-0:
+          destination: order-creation-status-topic
+        orderCreationStatusConsumer-in-0:
+          destination: order-creation-status-topic
+          group: shipment-group
           consumer:
             autoCommitOffset: true
-        shipmentProduce-out-0:
-          destination: shipment-response-topic
       kafka:
         binder:
           brokers: localhost:9093

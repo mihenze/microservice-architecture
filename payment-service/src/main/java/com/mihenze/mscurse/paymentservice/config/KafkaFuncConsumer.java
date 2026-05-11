@@ -1,6 +1,6 @@
 package com.mihenze.mscurse.paymentservice.config;
 
-import com.mihenze.mscurse.dtocommon.rest.payment.CreatePaymentRequest;
+import com.mihenze.mscurse.dtocommon.kafka.OrderCreationStatusMessage;
 import com.mihenze.mscurse.paymentservice.mapper.PaymentMapper;
 import com.mihenze.mscurse.paymentservice.service.PaymentService;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +19,15 @@ public class KafkaFuncConsumer {
     private final PaymentMapper paymentMapper;
 
     @Bean
-    public Consumer<Message<CreatePaymentRequest>> orderConsume() {
-        return message ->
-                paymentService.createPayment(paymentMapper.mapToPaymentDto(message.getPayload()));
+    public Consumer<Message<OrderCreationStatusMessage>> orderCreationStatusConsumer() {
+        return message -> {
+            OrderCreationStatusMessage payload = message.getPayload();
+            switch (payload.getOrderCreationStatus()) {
+                case DRAFT -> paymentService.createPayment(paymentMapper.mapToPaymentDto(message.getPayload()));
+                case DELIVERY_CANCELED -> paymentService.refundedPayment(paymentMapper.mapToPaymentDto(message.getPayload()));
+                default -> log.info("NOT MY STATUS");
+            }
+        };
+
     }
 }

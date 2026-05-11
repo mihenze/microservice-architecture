@@ -16,12 +16,6 @@ paths:
       summary: Получить список всех заказов
       operationId: getOrders
       responses:
-        "500":
-          description: Ошибка сервера
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OrderErrorResponse"
         "200":
           description: Список заказов получен
           content:
@@ -30,6 +24,12 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/OrderResponse"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderErrorResponse"
     put:
       tags:
       - Order Service API
@@ -48,6 +48,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/OrderResponse"
+        "400":
+          description: Переданы некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderErrorResponse"
         "404":
           description: Заказ не найден
           content:
@@ -56,12 +62,6 @@ paths:
                 $ref: "#/components/schemas/OrderErrorResponse"
         "500":
           description: Ошибка сервера
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OrderErrorResponse"
-        "400":
-          description: Переданы некорректные данные
           content:
             application/json:
               schema:
@@ -78,12 +78,6 @@ paths:
               $ref: "#/components/schemas/CreateOrderRequest"
         required: true
       responses:
-        "500":
-          description: Ошибка сервера
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OrderErrorResponse"
         "400":
           description: Переданы некорректные данные
           content:
@@ -96,6 +90,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/OrderResponse"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderErrorResponse"
   /api/v1/orders/{order_id}:
     get:
       tags:
@@ -111,6 +111,12 @@ paths:
           type: integer
           format: int64
       responses:
+        "200":
+          description: Информация о заказе получена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderResponse"
         "404":
           description: Заказ не найден
           content:
@@ -123,12 +129,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/OrderErrorResponse"
-        "200":
-          description: Информация о заказе получена
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OrderResponse"
     delete:
       tags:
       - Order Service API
@@ -149,14 +149,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/OrderErrorResponse"
+        "200":
+          description: Заказ успешно удален
         "500":
           description: Ошибка сервера
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/OrderErrorResponse"
-        "200":
-          description: Заказ успешно удален
 components:
   schemas:
     DeliveryAddressRequest:
@@ -216,10 +216,12 @@ components:
       example: CREATED
       enum:
       - CREATED
+      - PAYMENT_AWAITING
+      - PAID
+      - NOT_PAID
       - CANCELED
-      - PROCESSED
-      - COLLECTED
-      - DELIVERED
+      - DELIVERY_AWAITING
+      - REFUND_PAID
       - COMPLETED
     UpdateOrderRequest:
       required:

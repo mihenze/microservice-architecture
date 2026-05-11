@@ -1,11 +1,26 @@
 package com.mihenze.mscurse.orderservice.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mihenze.mscurse.dtocommon.kafka.AddressData;
+import com.mihenze.mscurse.dtocommon.kafka.OrderCreationStatus;
+import com.mihenze.mscurse.dtocommon.kafka.OrderCreationStatusMessage;
+import com.mihenze.mscurse.dtocommon.kafka.PaymentData;
+import com.mihenze.mscurse.dtocommon.rest.enums.Currency;
+import com.mihenze.mscurse.dtocommon.rest.enums.DeliveryMethod;
+import com.mihenze.mscurse.dtocommon.rest.enums.PaymentType;
+import com.mihenze.mscurse.dtocommon.rest.shipment.CreateShipmentRequest;
+import com.mihenze.mscurse.orderservice.config.BindingProperties;
 import com.mihenze.mscurse.orderservice.dto.OrderDto;
 import com.mihenze.mscurse.orderservice.entity.Order;
 import com.mihenze.mscurse.orderservice.entity.OrderItem;
 import com.mihenze.mscurse.orderservice.entity.OrderStatus;
+import com.mihenze.mscurse.orderservice.entity.async.AsyncMessage;
+import com.mihenze.mscurse.orderservice.enums.AsyncMessageStatus;
+import com.mihenze.mscurse.orderservice.enums.AsyncMessageType;
 import com.mihenze.mscurse.orderservice.exception.InvalidUpdateOrderException;
 import com.mihenze.mscurse.orderservice.exception.NotFoundOrderException;
+import com.mihenze.mscurse.orderservice.mapper.DeliveryAddressMapper;
 import com.mihenze.mscurse.orderservice.mapper.OrderMapper;
 import com.mihenze.mscurse.orderservice.repository.OrderRepository;
 import com.mihenze.mscurse.orderservice.util.UidGenerateService;
@@ -15,7 +30,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -24,8 +41,11 @@ import java.util.List;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
+    private final DeliveryAddressMapper deliveryAddressMapper;
     private final UidGenerateService uidGenerateService;
-    private final PaymentService paymentService;
+    private final AsyncMessageService asyncMessageService;
+    private final BindingProperties bindingProperties;
+    private final ObjectMapper mapper;
 
     @CircuitBreaker(name = "orderServiceCircuitBreaker", fallbackMethod = "fallbackCreateOrder")
     @Transactional
@@ -42,7 +62,7 @@ public class OrderService {
         Order orderSaved = orderRepository.save(order);
 
         // сформируем сообщение для оплаты
-        paymentService.createAndSaveOrderPaymentMessage(orderSaved.getId(), orderSaved.getCost());
+        createAndSaveOrderPaymentMessage(orderSaved.getId(), orderSaved.getCost());
 
         return orderMapper.mapToOrderDto(orderSaved);
     }
@@ -118,5 +138,47 @@ public class OrderService {
                 .orElseThrow(() -> new NotFoundOrderException(id));
 
         order.setStatus(orderStatus);
+    }
+
+    private void createAndSaveOrderPaymentMessage(Long orderId, BigDecimal amount) {
+
+        OrderCreationStatusMessage orderCreationStatusMessage = OrderCreationStatusMessage.builder()
+                .orderId(orderId)
+                .orderCreationStatus(OrderCreationStatus.DRAFT)
+                .paymentData(new PaymentData(PaymentType.CARD, amount, Currency.RUB))
+                .build();
+
+        createAsyncMessage(orderCreationStatusMessage);
+    }
+
+    @Transactional
+    public void createAndSaveOrderShipmentMessage(Long orderId, OrderCreationStatusMessage orderCreationStatusMessage) {
+        updateOrderStatus(orderId, OrderStatus.PAID);
+
+        OrderDto orderDto = getOrderById(orderId);
+
+        orderCreationStatusMessage.setAddressData(
+                deliveryAddressMapper.mapToAddressData(orderDto.getAddress())
+        );
+        orderCreationStatusMessage.setOrderCreationStatus(OrderCreationStatus.PROCESSED);
+        orderCreationStatusMessage.setDeliveryMethod(DeliveryMethod.COURIER);
+
+        createAsyncMessage(orderCreationStatusMessage);
+    }
+
+    private void createAsyncMessage(OrderCreationStatusMessage orderCreationStatusMessage) {
+        try {
+            AsyncMessage asyncMessage = AsyncMessage.builder()
+                    .bindingName(bindingProperties.getOrderCreationStatus())
+                    .value(mapper.writeValueAsString(orderCreationStatusMessage))
+                    .type(AsyncMessageType.OUTBOX)
+                    .status(AsyncMessageStatus.CREATED)
+                    .idempotencyKey(UUID.randomUUID())
+                    .build();
+
+            asyncMessageService.saveMessage(asyncMessage);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

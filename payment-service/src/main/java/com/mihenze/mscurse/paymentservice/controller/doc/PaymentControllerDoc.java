@@ -7,6 +7,7 @@ import com.mihenze.mscurse.paymentservice.rest.PaymentErrorResponse;
 import com.mihenze.mscurse.dtocommon.rest.transaction.CreateTransactionRequest;
 import com.mihenze.mscurse.dtocommon.rest.transaction.TransactionResponse;
 import com.mihenze.mscurse.dtocommon.rest.transaction.UpdateTransactionRequest;
+import com.mihenze.mscurse.paymentservice.rest.payment.UpdatePaymentStatusRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -66,6 +67,19 @@ public interface PaymentControllerDoc {
                             schema = @Schema(implementation = PaymentErrorResponse.class)))
     })
     ResponseEntity<PaymentResponse> updatePayment(@RequestBody UpdatePaymentRequest request);
+
+    @Operation(summary = "Обновить состояние оплаты")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Оплата успешно обновлена"),
+            @ApiResponse(responseCode = "400", description = "Переданы некорректные данные",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = PaymentErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Ошибка сервера",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = PaymentErrorResponse.class)))
+    })
+    ResponseEntity<Void> updatePaymentStatus(@RequestBody UpdatePaymentStatusRequest request);
+
     @Operation(summary = "Удалить оплату")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Оплата успешно удалена"),

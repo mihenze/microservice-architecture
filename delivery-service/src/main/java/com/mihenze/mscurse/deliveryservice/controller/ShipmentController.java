@@ -3,6 +3,7 @@ package com.mihenze.mscurse.deliveryservice.controller;
 import com.mihenze.mscurse.deliveryservice.controller.doc.ShipmentControllerDoc;
 import com.mihenze.mscurse.deliveryservice.mapper.ShipmentMapper;
 import com.mihenze.mscurse.deliveryservice.rest.shipment.UpdateShipmentRequest;
+import com.mihenze.mscurse.deliveryservice.rest.shipment.UpdateShipmentStatusRequest;
 import com.mihenze.mscurse.deliveryservice.service.ShipmentService;
 import com.mihenze.mscurse.dtocommon.rest.shipment.CreateShipmentRequest;
 import com.mihenze.mscurse.dtocommon.rest.shipment.ShipmentResponse;
@@ -35,6 +36,13 @@ public class ShipmentController implements ShipmentControllerDoc {
     public ResponseEntity<ShipmentResponse> updateShipment(@RequestBody UpdateShipmentRequest request) {
         return ResponseEntity.ok(
                 shipmentMapper.mapToShipmentResponse(shipmentService.updateShipment(shipmentMapper.mapToShipmentDto(request))));
+    }
+
+    @PutMapping("/status")
+    @Override
+    public ResponseEntity<Void> updateShipmentStatus(@RequestBody UpdateShipmentStatusRequest request) {
+        shipmentService.updateShipmentStatus(request.getId(), request.getStatus());
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{shipment_id}")

@@ -1,6 +1,6 @@
 package com.mihenze.mscurse.deliveryservice.config;
 
-import com.mihenze.mscurse.dtocommon.rest.shipment.ShipmentResponse;
+import com.mihenze.mscurse.dtocommon.kafka.OrderCreationStatusMessage;
 import lombok.Getter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,11 +14,11 @@ import java.util.function.Supplier;
 @Configuration
 @Getter
 public class KafkaFuncProducer {
-    private Sinks.Many<Message<ShipmentResponse>> shipmentStream =
+    private Sinks.Many<Message<OrderCreationStatusMessage>> shipmentStream =
             Sinks.many().multicast().onBackpressureBuffer(Queues.SMALL_BUFFER_SIZE, false);
 
     @Bean
-    public Supplier<Flux<Message<ShipmentResponse>>> shipmentProduce() {
+    public Supplier<Flux<Message<OrderCreationStatusMessage>>> orderCreationStatusProducer() {
         return () -> shipmentStream.asFlux(); //считываем данные из потока Flux
     }
 }

@@ -2,8 +2,8 @@ package com.mihenze.mscurse.paymentservice.rest.payment;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.mihenze.mscurse.dtocommon.rest.enums.PaymentStatus;
 import com.mihenze.mscurse.paymentservice.entity.Currency;
-import com.mihenze.mscurse.paymentservice.entity.PaymentStatus;
 import com.mihenze.mscurse.paymentservice.entity.PaymentType;
 import com.mihenze.mscurse.paymentservice.rest.transaction.TransactionResponse;
 import io.swagger.v3.oas.annotations.media.Schema;

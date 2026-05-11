@@ -10,6 +10,7 @@ import com.mihenze.mscurse.paymentservice.mapper.TransactionMapper;
 import com.mihenze.mscurse.dtocommon.rest.transaction.CreateTransactionRequest;
 import com.mihenze.mscurse.dtocommon.rest.transaction.TransactionResponse;
 import com.mihenze.mscurse.dtocommon.rest.transaction.UpdateTransactionRequest;
+import com.mihenze.mscurse.paymentservice.rest.payment.UpdatePaymentStatusRequest;
 import com.mihenze.mscurse.paymentservice.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +44,13 @@ public class PaymentController implements PaymentControllerDoc {
     public ResponseEntity<PaymentResponse> updatePayment(@RequestBody UpdatePaymentRequest request) {
         return ResponseEntity.ok(paymentMapper.mapToPaymentResponse(paymentService
                 .updatePayment(paymentMapper.mapToPaymentDto(request))));
+    }
+
+    @PutMapping("/status")
+    @Override
+    public ResponseEntity<Void> updatePaymentStatus(@RequestBody UpdatePaymentStatusRequest request) {
+        paymentService.updatePaymentStatus(request.getId(), request.getStatus());
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{payment_id}")

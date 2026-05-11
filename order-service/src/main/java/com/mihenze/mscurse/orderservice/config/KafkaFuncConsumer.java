@@ -1,9 +1,8 @@
 package com.mihenze.mscurse.orderservice.config;
 
-import com.mihenze.mscurse.dtocommon.rest.enums.AsyncEventType;
-import com.mihenze.mscurse.dtocommon.rest.payment.PaymentResponse;
-import com.mihenze.mscurse.dtocommon.rest.shipment.ShipmentResponse;
-import com.mihenze.mscurse.orderservice.service.ShipmentService;
+import com.mihenze.mscurse.dtocommon.kafka.OrderCreationStatusMessage;
+import com.mihenze.mscurse.orderservice.entity.OrderStatus;
+import com.mihenze.mscurse.orderservice.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -17,38 +16,39 @@ import java.util.function.Consumer;
 @Slf4j
 public class KafkaFuncConsumer {
 
-    private final ShipmentService shipmentService;
+    private final OrderService orderService;
     private final IdempotentMessageProcessor idempotentMessageProcessor;
     private final BindingProperties bindingProperties;
 
     @Bean
-    public Consumer<Message<PaymentResponse>> paymentConsume() {
+    public Consumer<Message<OrderCreationStatusMessage>> orderCreationStatus() {
         return message -> {
 
             idempotentMessageProcessor.process(
                     message,
                     payload -> {
-                        shipmentService.createShipment(payload.getOrderId());
+                        switch (payload.getOrderCreationStatus()) {
+                            case PAYMENT_WAITING -> orderService.updateOrderStatus(payload.getOrderId(),
+                                    OrderStatus.PAYMENT_AWAITING);
+                            case PAYMENT_CONFIRM -> orderService.createAndSaveOrderShipmentMessage(payload.getOrderId(), payload);
+                            case PAYMENT_ABORT -> orderService.updateOrderStatus(payload.getOrderId(),
+                                    OrderStatus.NOT_PAID);
+                            case PAYMENT_REFUNDED -> orderService.updateOrderStatus(payload.getOrderId(),
+                                    OrderStatus.CANCELED);
+                            case DELIVERY_CREATED -> orderService.updateOrderStatus(payload.getOrderId(),
+                                    OrderStatus.DELIVERY_AWAITING);
+                            case DELIVERY_CANCELED -> orderService.updateOrderStatus(payload.getOrderId(),
+                                    OrderStatus.REFUND_PAID);
+                            case DELIVERY_COMPLETED -> orderService.updateOrderStatus(payload.getOrderId(),
+                                    OrderStatus.COMPLETED);
+                            default -> {
+                                log.info("NOT MY STATUS");
+                                return null;
+                            }
+                        }
                         return null;
                     },
-                    AsyncEventType.PAYMENT_CONFIRM,
-                    bindingProperties.getPaymentConfirm()
-            );
-        };
-    }
-
-    @Bean
-    public Consumer<Message<ShipmentResponse>> shipmentConsume() {
-        return message -> {
-
-            idempotentMessageProcessor.process(
-                    message,
-                    payload -> {
-                        log.info("Shipment = {}", payload);
-                        return null;
-                    },
-                    AsyncEventType.SHIPMENT_CONFIRM,
-                    bindingProperties.getShipmentConfirm()
+                    bindingProperties.getOrderCreationStatus()
             );
         };
     }

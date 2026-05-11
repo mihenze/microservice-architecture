@@ -26,8 +26,8 @@ paths:
               $ref: "#/components/schemas/UpdateShipmentRequest"
         required: true
       responses:
-        "400":
-          description: Переданы некорректные данные
+        "500":
+          description: Ошибка сервера
           content:
             application/json:
               schema:
@@ -38,8 +38,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ShipmentResponse"
-        "500":
-          description: Ошибка сервера
+        "400":
+          description: Переданы некорректные данные
           content:
             application/json:
               schema:
@@ -56,12 +56,6 @@ paths:
               $ref: "#/components/schemas/CreateShipmentRequest"
         required: true
       responses:
-        "400":
-          description: Переданы некорректные данные
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DeliveryErrorResponse"
         "200":
           description: Новое отправление успешно создано
           content:
@@ -74,6 +68,38 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DeliveryErrorResponse"
+        "400":
+          description: Переданы некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
+  /api/v1/shipments/status:
+    put:
+      tags:
+      - Delivery Service API - shipment
+      summary: Обновить статус отправление
+      operationId: updateShipmentStatus
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateShipmentStatusRequest"
+      responses:
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
+        "400":
+          description: Переданы некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
+        "200":
+          description: Отправление успешно обновлено
   /api/v1/shipments/{shipment_id}/tracking:
     post:
       tags:
@@ -95,6 +121,12 @@ paths:
               $ref: "#/components/schemas/CreateTrackingEventRequest"
         required: true
       responses:
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
         "200":
           description: Новое отслеживание успешно создано
           content:
@@ -103,12 +135,6 @@ paths:
                 $ref: "#/components/schemas/TrackingEventResponse"
         "400":
           description: Переданы некорректные данные
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DeliveryErrorResponse"
-        "500":
-          description: Ошибка сервера
           content:
             application/json:
               schema:
@@ -134,8 +160,8 @@ paths:
               $ref: "#/components/schemas/CreatePackageRequest"
         required: true
       responses:
-        "400":
-          description: Переданы некорректные данные
+        "500":
+          description: Ошибка сервера
           content:
             application/json:
               schema:
@@ -146,8 +172,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PackageResponse"
-        "500":
-          description: Ошибка сервера
+        "400":
+          description: Переданы некорректные данные
           content:
             application/json:
               schema:
@@ -171,14 +197,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TrackingEventResponse"
-        "400":
-          description: Переданы некорректные данные
+        "500":
+          description: Ошибка сервера
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/DeliveryErrorResponse"
-        "500":
-          description: Ошибка сервера
+        "400":
+          description: Переданы некорректные данные
           content:
             application/json:
               schema:
@@ -196,12 +222,6 @@ paths:
               $ref: "#/components/schemas/UpdatePackageRequest"
         required: true
       responses:
-        "400":
-          description: Переданы некорректные данные
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DeliveryErrorResponse"
         "200":
           description: Посылка успешно обновлена
           content:
@@ -210,6 +230,12 @@ paths:
                 $ref: "#/components/schemas/PackageResponse"
         "500":
           description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
+        "400":
+          description: Переданы некорректные данные
           content:
             application/json:
               schema:
@@ -229,12 +255,6 @@ paths:
           type: integer
           format: int64
       responses:
-        "404":
-          description: Оплата не найдена
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DeliveryErrorResponse"
         "200":
           description: Информация об отправлении получена
           content:
@@ -243,6 +263,12 @@ paths:
                 $ref: "#/components/schemas/ShipmentResponse"
         "500":
           description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
+        "404":
+          description: Оплата не найдена
           content:
             application/json:
               schema:
@@ -296,14 +322,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TrackingEventResponse"
-        "404":
-          description: Оплата не найдена
+        "500":
+          description: Ошибка сервера
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/DeliveryErrorResponse"
-        "500":
-          description: Ошибка сервера
+        "404":
+          description: Оплата не найдена
           content:
             application/json:
               schema:
@@ -323,6 +349,12 @@ paths:
           type: integer
           format: int64
       responses:
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryErrorResponse"
         "404":
           description: Оплата не найдена
           content:
@@ -335,12 +367,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PackageResponse"
-        "500":
-          description: Ошибка сервера
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DeliveryErrorResponse"
     delete:
       tags:
       - Delivery Service API - package
@@ -361,14 +387,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DeliveryErrorResponse"
-        "200":
-          description: Посылка успешно удалена
         "500":
           description: Ошибка сервера
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/DeliveryErrorResponse"
+        "200":
+          description: Посылка успешно удалена
   /api/v1/shipments/{tracking_id}:
     delete:
       tags:
@@ -384,14 +410,14 @@ paths:
           type: integer
           format: int64
       responses:
-        "200":
-          description: Отслеживание успешно удалено
         "404":
           description: Отслеживание не найдено
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/DeliveryErrorResponse"
+        "200":
+          description: Отслеживание успешно удалено
         "500":
           description: Ошибка сервера
           content:
@@ -642,6 +668,19 @@ components:
       - COURIER_ASSIGNED
       - OUT_FOR_DELIVERY
       - DELIVERED
+    UpdateShipmentStatusRequest:
+      required:
+      - id
+      - status
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Уникальный идентификатор отправления
+          format: int64
+        status:
+          $ref: "#/components/schemas/ShipmentStatusEnum"
+      description: Обновить статус текущего отправления
     CreateShipmentRequest:
       required:
       - addressApartment

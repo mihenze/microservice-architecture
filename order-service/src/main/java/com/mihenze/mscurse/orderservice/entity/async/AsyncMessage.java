@@ -1,6 +1,5 @@
 package com.mihenze.mscurse.orderservice.entity.async;
 
-import com.mihenze.mscurse.dtocommon.rest.enums.AsyncEventType;
 import com.mihenze.mscurse.orderservice.enums.AsyncMessageStatus;
 import com.mihenze.mscurse.orderservice.enums.AsyncMessageType;
 import jakarta.persistence.*;
@@ -28,10 +27,6 @@ public class AsyncMessage {
     @Column(name = "headers")
     private String headers;
 
-    @Column(name = "payload_type")
-    @Enumerated(EnumType.STRING)
-    private AsyncEventType payloadType;
-
     @Column(name = "payload", nullable = false, columnDefinition = "TEXT")
     private String value;
 
@@ -42,10 +37,7 @@ public class AsyncMessage {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private AsyncMessageStatus status;
-<<<<<<< task11-idempotent-event
 
     @Column(unique = true)
     private UUID idempotencyKey;
-=======
->>>>>>> main
 }

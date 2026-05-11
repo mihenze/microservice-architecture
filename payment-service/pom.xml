@@ -184,7 +184,10 @@
 									<artifactId>lombok</artifactId>
 								</exclude>
 							</excludes>
-							<jvmArguments>-Dspring.application.admin.enabled=true</jvmArguments>
+							<jvmArguments>
+								-Dspring.application.admin.enabled=true
+								-Dspring.profiles.active=openapi
+							</jvmArguments>
 						</configuration>
 						<executions>
 							<execution>
