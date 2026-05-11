@@ -25,7 +25,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final UidGenerateService uidGenerateService;
-    private final SenderService senderService;
+    private final PaymentService paymentService;
 
     @CircuitBreaker(name = "orderServiceCircuitBreaker", fallbackMethod = "fallbackCreateOrder")
     @Transactional
@@ -41,8 +41,8 @@ public class OrderService {
 
         Order orderSaved = orderRepository.save(order);
 
-        // сформируем оплату
-        senderService.createPayment(orderSaved.getId(), orderSaved.getCost());
+        // сформируем сообщение для оплаты
+        paymentService.createAndSaveOrderPaymentMessage(orderSaved.getId(), orderSaved.getCost());
 
         return orderMapper.mapToOrderDto(orderSaved);
     }

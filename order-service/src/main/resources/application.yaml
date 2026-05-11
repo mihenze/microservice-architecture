@@ -18,10 +18,10 @@ spring:
       path: /h2-console
   cloud:
     function:
-      definition: orderProduce;paymentConsume;orderProduceShipment;shipmentConsume
+      definition: orderProducePayment;paymentConsume;orderProduceShipment;shipmentConsume
     stream:
       bindings:
-        orderProduce-out-0:
+        orderProducePayment-out-0:
           destination: create-payment-topic
         paymentConsume-in-0:
           destination: payment-response-topic
@@ -114,3 +114,8 @@ resilience4j:
 integration:
   payment-service:
     base-url: http://localhost:8002/api/v1/payments
+
+app:
+  bindings:
+    payment-created: orderProducePayment-out-0
+    shipment-created: orderProduceShipment-out-0
