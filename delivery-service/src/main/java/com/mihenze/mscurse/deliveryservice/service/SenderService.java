@@ -9,6 +9,8 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Sinks;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -18,7 +20,10 @@ public class SenderService {
 
     public void sendShipmentInfo(ShipmentDto shipmentDto) {
         kafkaFuncProducer.getShipmentStream().emitNext(
-                MessageBuilder.withPayload(shipmentMapper.mapToShipmentResponse(shipmentDto))
-                        .build(), Sinks.EmitFailureHandler.FAIL_FAST);
+                MessageBuilder
+                        .withPayload(shipmentMapper.mapToShipmentResponse(shipmentDto))
+                        .setHeader("X-Idempotency-Key", UUID.randomUUID().toString())
+                        .build(),
+                Sinks.EmitFailureHandler.FAIL_FAST);
     }
 }

@@ -15,6 +15,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+<<<<<<< task11-idempotent-event
+
+import java.util.UUID;
+=======
+>>>>>>> main
 
 @Service
 @RequiredArgsConstructor
@@ -57,6 +62,10 @@ public class ShipmentService {
                     .payloadType(AsyncEventType.SHIPMENT_CREATED)
                     .type(AsyncMessageType.OUTBOX)
                     .status(AsyncMessageStatus.CREATED)
+<<<<<<< task11-idempotent-event
+                    .idempotencyKey(UUID.randomUUID())
+=======
+>>>>>>> main
                     .build();
 
             asyncMessageService.saveMessage(asyncMessage);

@@ -118,4 +118,10 @@ integration:
 app:
   bindings:
     payment-created: orderProducePayment-out-0
+<<<<<<< task11-idempotent-event
     shipment-created: orderProduceShipment-out-0
+    payment-confirm: paymentConsume-in-0
+    shipment-confirm: shipmentConsume-in-0
+=======
+    shipment-created: orderProduceShipment-out-0
+>>>>>>> main

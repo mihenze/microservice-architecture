@@ -42,4 +42,10 @@ public class AsyncMessage {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private AsyncMessageStatus status;
+<<<<<<< task11-idempotent-event
+
+    @Column(unique = true)
+    private UUID idempotencyKey;
+=======
+>>>>>>> main
 }
